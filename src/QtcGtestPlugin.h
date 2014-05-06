@@ -8,6 +8,8 @@
 namespace QtcGtest {
   namespace Internal {
 
+    class TestProject;
+
     /*!
      * \brief main plugin class.
      */
@@ -26,6 +28,10 @@ namespace QtcGtest {
 
       private:
         void initLanguage ();
+        void initMenus ();
+
+      private:
+        TestProject* testProject_;
     };
 
   } // namespace Internal

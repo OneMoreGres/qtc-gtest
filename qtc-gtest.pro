@@ -10,7 +10,10 @@ SOURCES += \
     src/OutputParser.cpp \
     src/TestModel.cpp \
     src/OutputPane.cpp \
-    src/ParseState.cpp
+    src/ParseState.cpp \
+    src/TestProject.cpp \
+    src/CustomRunConfiguration.cpp \
+    src/AutoToolTipDelegate.cpp
 
 HEADERS += \
     src/Constants.h \
@@ -20,7 +23,13 @@ HEADERS += \
     src/OutputParser.h \
     src/TestModel.h \
     src/OutputPane.h \
-    src/ParseState.h
+    src/ParseState.h \
+    src/TestProject.h \
+    src/CustomRunConfiguration.h \
+    src/AutoToolTipDelegate.h
+
+FORMS += \
+    src/PaneWidget.ui
 
 TRANSLATIONS += \
     translation/QtcGtest_ru.ts
@@ -37,11 +46,12 @@ PROVIDER = Gres
 
 QTC_PLUGIN_NAME = QtcGtest
 QTC_LIB_DEPENDS += \
-    # nothing here at this time
+    cplusplus
 
 QTC_PLUGIN_DEPENDS += \
     coreplugin\
-    projectexplorer
+    projectexplorer\
+    cpptools
 
 QTC_PLUGIN_RECOMMENDS += \
     # optional plugin dependencies. nothing here at this time
@@ -49,7 +59,3 @@ QTC_PLUGIN_RECOMMENDS += \
 ###### End _dependencies.pri contents ######
 
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
-
-FORMS += \
-    src/PaneWidget.ui
-

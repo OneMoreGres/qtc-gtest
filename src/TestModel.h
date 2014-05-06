@@ -6,6 +6,9 @@
 namespace QtcGtest {
   namespace Internal {
 
+    /*!
+     * \brief Model representing results of tests run.
+     */
     class TestModel : public QStandardItemModel
     {
         Q_OBJECT

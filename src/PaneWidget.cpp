@@ -1,6 +1,7 @@
 #include "PaneWidget.h"
 #include "ui_PaneWidget.h"
 #include "TestModel.h"
+#include "AutoToolTipDelegate.h"
 
 using namespace QtcGtest::Internal;
 
@@ -19,6 +20,7 @@ PaneWidget::PaneWidget(QAbstractItemModel *model, QWidget *parent) :
   ui->caseView->setModel (model);
   ui->caseView->hideColumn (TestModel::ColumnType);
   ui->caseView->header ()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  ui->caseView->setItemDelegate (new AutoToolTipDelegate (ui->caseView));
 }
 
 PaneWidget::~PaneWidget()

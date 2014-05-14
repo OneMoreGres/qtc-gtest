@@ -69,6 +69,7 @@ void TestProject::checkChanged()
   if (configuration != NULL)
   {
     runTestsForFiles (changedFiles_, configuration);
+    changedFiles_.clear ();
   }
 }
 

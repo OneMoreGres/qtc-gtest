@@ -75,12 +75,17 @@ void QtcGtestPlugin::initLanguage()
   const QString& language = Core::ICore::userInterfaceLanguage();
   if (!language.isEmpty())
   {
+    QStringList paths;
+    paths << ICore::resourcePath () << ICore::userResourcePath();
+    const QString& trFile = QLatin1String ("QtcCppcheck_") + language;
     QTranslator* translator = new QTranslator (this);
-    const QString& creatorTrPath = ICore::resourcePath () + QLatin1String ("/translations");
-    const QString& trFile = QLatin1String ("QtcGtest_") + language;
-    if (translator->load (trFile, creatorTrPath))
+    foreach (const QString& path, paths)
     {
-      qApp->installTranslator (translator);
+      if (translator->load (trFile, path + QLatin1String ("/translations")))
+      {
+        qApp->installTranslator (translator);
+        break;
+      }
     }
   }
 }

@@ -5,6 +5,7 @@ Plugin integrates some [Google Test](https://code.google.com/p/googletest/ "Goog
 
 ##Features
 * Parse test runner's output and show tests' results in pane
+* Launches tests from active project
 * Translation support
 
 

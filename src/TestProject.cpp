@@ -2,12 +2,14 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
-#include <cpptools/cppmodelmanager.h>
+#include <cpptools/cppmodelmanagerinterface.h>
 #include <cpptools/searchsymbols.h>
 #include <cplusplus/DependencyTable.h>
+#include <projectexplorer/project.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/target.h>
+#include <texteditor/basetexteditor.h>
 
 #include "TestProject.h"
 #include "CustomRunConfiguration.h"
@@ -179,12 +181,10 @@ void TestProject::handleDocumentsClose(const QModelIndex &parent, int start, int
 
 QStringList TestProject::getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const
 {
-  DocumentModel* model = EditorManager::documentModel ();
-  Q_ASSERT (model != NULL);
   QStringList files;
   for (int row = beginRow; row <= endRow; ++row)
   {
-    DocumentModel::Entry* entry = model->documentAtRow (row);
+    DocumentModel::Entry* entry = DocumentModel::entryAtRow (row);
     if (entry == NULL)
     {
       continue;
@@ -209,12 +209,10 @@ CustomRunConfiguration *TestProject::parse(Project *project)
     return NULL;
   }
 
-  //Internal? How to get this properly?
-  CppTools::Internal::CppModelManager *modelManager =
-      CppTools::Internal::CppModelManager::instance();
-
+  //TODO build dependency table only on globalSnapshotChange signal?
+  using namespace CppTools;
   DependencyTable table;
-  table.build (modelManager->snapshot ());
+  table.build (CppModelManagerInterface::instance ()->snapshot ());
   dependencyTable_ = table.dependencyTable ();
   gtestIncludeFile_ = gtestMainInclude ();
   if (gtestIncludeFile_.isEmpty ())

@@ -58,11 +58,11 @@ bool QtcGtestPlugin::initialize(const QStringList &arguments, QString *errorStri
   addAutoReleasedObject (pane);
 
 
-  connect (EditorManager::documentModel (),
+  connect (DocumentModel::model (),
            SIGNAL (dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)),
            testProject_,
            SLOT (handleDocumentsChange(const QModelIndex &, const QModelIndex &, const QVector<int> &)));
-  connect (EditorManager::documentModel (),
+  connect (DocumentModel::model (),
            SIGNAL (rowsAboutToBeRemoved(const QModelIndex &, int, int)),
            testProject_,
            SLOT (handleDocumentsClose(const QModelIndex &, int, int)));

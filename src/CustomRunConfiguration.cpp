@@ -22,7 +22,7 @@ QString QtcGtest::Internal::CustomRunConfiguration::executable() const
   return executable_;
 }
 
-LocalApplicationRunConfiguration::RunMode QtcGtest::Internal::CustomRunConfiguration::runMode() const
+ApplicationLauncher::Mode QtcGtest::Internal::CustomRunConfiguration::runMode() const
 {
   return runMode_;
 }

@@ -19,7 +19,7 @@ namespace QtcGtest {
 
         QWidget *createConfigurationWidget();
         QString executable() const;
-        RunMode runMode() const;
+        ProjectExplorer::ApplicationLauncher::Mode runMode() const;
         QString workingDirectory() const;
         QString commandLineArguments() const;
 
@@ -27,7 +27,7 @@ namespace QtcGtest {
 
       private:
         QString executable_;
-        RunMode runMode_;
+        ProjectExplorer::ApplicationLauncher::Mode runMode_;
         QString workingDirectory_;
         QString commandLineArguments_;
     };

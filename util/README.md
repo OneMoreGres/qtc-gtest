@@ -3,3 +3,5 @@
 + Run tests from current project
 + Run tests that depends on current file
 + Run tests that depends on changed files
+## v 3.2.0
+QTC version update

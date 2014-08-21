@@ -2,6 +2,8 @@
 #define TESTPROJECT_H
 
 #include <QObject>
+#include <QHash>
+#include <QStringList>
 
 namespace ProjectExplorer
 {

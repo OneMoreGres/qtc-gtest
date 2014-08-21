@@ -1,6 +1,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <QMenu>
+#include <QCoreApplication>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/coreconstants.h>

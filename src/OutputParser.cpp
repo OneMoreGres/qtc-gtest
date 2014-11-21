@@ -1,3 +1,4 @@
+#include <QFileInfo>
 #include <QRegularExpression>
 
 #include "OutputParser.h"
@@ -93,7 +94,12 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   if (match.hasMatch ())
   {
     Q_ASSERT (!state.projectPath.isEmpty ());
-    QString file = state.projectPath + QLatin1Char ('/') + match.captured (1);
+    QString file = match.captured (1);
+    QFileInfo info (file);
+    if (info.isRelative ())
+    {
+      file = state.projectPath + QLatin1Char ('/') + match.captured (1);
+    }
     int lineNumber = match.captured (2).toInt ();
     model.addTestError (state.currentTest, state.currentCase, line, file, lineNumber);
     return;

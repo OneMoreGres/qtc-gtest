@@ -27,7 +27,7 @@ bool QtcGtest::Internal::AutoToolTipDelegate::helpEvent(
       if (tooltip.canConvert<QString>())
       {
         QToolTip::showText(event->globalPos(), QString(QLatin1String ("<div>%1</div>"))
-                            .arg(Qt::escape(tooltip.toString())), view);
+                            .arg(tooltip.toString().toHtmlEscaped ()), view);
         return true;
       }
     }

@@ -2,14 +2,13 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
-#include <cpptools/cppmodelmanagerinterface.h>
+#include <cpptools/cppmodelmanager.h>
 #include <cpptools/searchsymbols.h>
 #include <cplusplus/DependencyTable.h>
 #include <projectexplorer/project.h>
 #include <projectexplorer/session.h>
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/target.h>
-#include <texteditor/basetexteditor.h>
 
 #include "TestProject.h"
 #include "CustomRunConfiguration.h"
@@ -210,10 +209,15 @@ CustomRunConfiguration *TestProject::parse(Project *project)
   }
 
   //TODO build dependency table only on globalSnapshotChange signal?
+  //TODO use snapshot instead of copying it to qhash?
   using namespace CppTools;
-  DependencyTable table;
-  table.build (CppModelManagerInterface::instance ()->snapshot ());
-  dependencyTable_ = table.dependencyTable ();
+  Snapshot snapshot = CppModelManagerBase::instance ()->snapshot ();
+  dependencyTable_.clear ();
+  for (Snapshot::const_iterator i = snapshot.begin (), end = snapshot.end (); i != end; ++i)
+  {
+    const QString& fileName = i.key ();
+    dependencyTable_[fileName] = snapshot.filesDependingOn (fileName);
+  }
   gtestIncludeFile_ = gtestMainInclude ();
   if (gtestIncludeFile_.isEmpty ())
   {

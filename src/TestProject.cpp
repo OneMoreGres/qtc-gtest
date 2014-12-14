@@ -245,7 +245,7 @@ QString TestProject::gtestMainInclude() const
 {
   foreach (const QString& file, dependencyTable_.keys ())
   {
-    if (file.endsWith (gtestInclude))
+    if (file.endsWith (QLatin1Char('/') + gtestInclude)) // Should work fine because file contains full path
     {
       return file;
     }

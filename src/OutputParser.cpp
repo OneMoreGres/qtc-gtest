@@ -10,22 +10,30 @@ namespace
 {
   const QRegularExpression gtestStartPattern (
       QLatin1String ("^(.*)\\[==========\\] Running \\d+ tests? from \\d+ test cases?\\.\\s*$"));
+  enum GtestStart {GtestStartUnrelated = 1};
   const QRegularExpression gtestEndPattern   (
       QLatin1String ("^(.*)\\[==========\\] (\\d+) tests? from (\\d+) test cases? ran. \\((\\d+) ms total\\)\\s*$"));
+  enum GtestEnd{GtestEndUnrelated = 1, GtestEndTestsRun, GtestEndCasesRun, GtestEndTimeSpent};
 
   const QRegularExpression newCasePattern    (
       QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+)(, where TypeParam = (\\w+))?\\s*$"));
+  enum NewCase{NewCaseUnrelated = 1, NewCaseName, NewCaseFullParameter, NewCaseParameterType};
   const QRegularExpression endCasePattern    (
       QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+) \\((\\d+) ms total\\)\\s*$"));
+  enum EndCase{EndCaseUnrelated = 1, EndCaseName, EndCaseTimeSpent};
 
   const QRegularExpression beginTestPattern  (
       QLatin1String ("^(.*)\\[ RUN      \\] ([\\w/]+)\\.([\\w/]+)\\s*$"));
+  enum NewTest{NewTestUnrelated = 1, NewTestCaseName, NewTestName};
   const QRegularExpression failTestPattern   (
       QLatin1String ("^(.*)\\[  FAILED  \\] ([\\w/]+)\\.([\\w/]+) \\((\\d+) ms\\)\\s*$"));
+  enum FailTest{FailTestUnrelated = 1, FailTestCaseName, FailTestName, FailTestTimeSpent};
   const QRegularExpression passTestPattern   (
       QLatin1String ("^(.*)\\[       OK \\] ([\\w/]+)\\.([\\w/]+) \\((\\d+) ms\\)\\s*$"));
+  enum PassTest{PassTestUnrelated = 1, PassTestCaseName, PassTestName, PassTestTimeSpent};
   const QRegularExpression failDetailPattern (
       QLatin1String ("^(.+):(\\d+): Failure\\s*$"));
+  enum FailDetail{FailDetailFileName = 1, FailDetailLine};
 }
 
 OutputParser::OutputParser(QObject *parent) :
@@ -45,10 +53,10 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = newCasePattern.match (line);
   if (match.hasMatch ())
   {
-    state.currentCase = match.captured (2);
-    if (match.lastCapturedIndex() == 4)
+    state.currentCase = match.captured (NewCaseName);
+    if (match.lastCapturedIndex() == NewCaseParameterType)
     {
-      state.currentCase += QString (QLatin1String(" <%1>")).arg (match.captured (4));
+      state.currentCase += QString (QLatin1String(" <%1>")).arg (match.captured (NewCaseParameterType));
     }
     state.passedCount = state.failedCount = 0;
     model.addCase (state.currentCase);
@@ -58,7 +66,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = endCasePattern.match (line);
   if (match.hasMatch ())
   {
-    int totalTime = match.captured (3).toInt ();
+    int totalTime = match.captured (EndCaseTimeSpent).toInt ();
     model.updateCase (state.currentCase, state.passedCount, state.failedCount, totalTime);
     state.currentCase.clear ();
     state.currentTest.clear ();
@@ -68,7 +76,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = beginTestPattern.match (line);
   if (match.hasMatch ())
   {
-    state.currentTest = match.captured (3);
+    state.currentTest = match.captured (NewTestName);
     model.addTest (state.currentTest, state.currentCase);
     return;
   }
@@ -76,13 +84,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = passTestPattern.match (line);
   if (match.hasMatch ())
   {
-    QString unrelated = match.captured(1);
+    QString unrelated = match.captured(PassTestUnrelated);
     if (!unrelated.isEmpty()) {
       model.addTestDetail (state.currentTest, state.currentCase, unrelated);
     }
     ++state.passedCount;
     ++state.passedTotalCount;
-    int totalTime = match.captured (4).toInt ();
+    int totalTime = match.captured (PassTestTimeSpent).toInt ();
     model.updateTest (state.currentTest, state.currentCase, true, totalTime);
     state.currentTest.clear ();
     return;
@@ -91,13 +99,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = failTestPattern.match (line);
   if (match.hasMatch ())
   {
-    QString unrelated = match.captured(1);
+    QString unrelated = match.captured(PassTestUnrelated);
     if (!unrelated.isEmpty()) {
       model.addTestDetail (state.currentTest, state.currentCase, unrelated);
     }
     ++state.failedCount;
     ++state.failedTotalCount;
-    int totalTime = match.captured (4).toInt ();
+    int totalTime = match.captured (FailTestTimeSpent).toInt ();
     model.updateTest (state.currentTest, state.currentCase, false, totalTime);
     state.currentTest.clear ();
     return;
@@ -107,13 +115,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   if (match.hasMatch ())
   {
     Q_ASSERT (!state.projectPath.isEmpty ());
-    QString file = match.captured (2);
+    QString file = match.captured (FailDetailFileName);
     QFileInfo info (file);
     if (info.isRelative ())
     {
-      file = state.projectPath + QLatin1Char ('/') + match.captured (2);
+      file = state.projectPath + QLatin1Char ('/') + match.captured (FailDetailFileName);
     }
-    int lineNumber = match.captured (3).toInt ();
+    int lineNumber = match.captured (FailDetailLine).toInt ();
     model.addTestError (state.currentTest, state.currentCase, line, file, lineNumber);
     return;
   }
@@ -121,7 +129,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = gtestEndPattern.match (line);
   if (match.hasMatch ())
   {
-    state.totalTime = match.captured (3).toInt ();
+    state.totalTime = match.captured (GtestEndTimeSpent).toInt ();
     return;
   }
 

@@ -40,6 +40,9 @@ void PaneWidget::setCurrentIndex(const QModelIndex &index)
 
 void PaneWidget::spanDetailRows(const QModelIndex &parent, int start, int end)
 {
+  if (!parent.isValid()) {
+    return;
+  }
   const TestModel* model = qobject_cast<const TestModel*> (parent.model ());
   Q_ASSERT (model != NULL);
   if (model->getType (parent) != TestModel::TypeTest)

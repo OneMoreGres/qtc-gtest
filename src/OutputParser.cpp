@@ -14,16 +14,16 @@ namespace
       QLatin1String ("^(.*)\\[==========\\] (\\d+) tests? from (\\d+) test cases? ran. \\((\\d+) ms total\\)\\s*$"));
 
   const QRegularExpression newCasePattern    (
-      QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from (\\w+)\\s*$"));
+      QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+)(, where TypeParam = (\\w+))?\\s*$"));
   const QRegularExpression endCasePattern    (
-      QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from (\\w+) \\((\\d+) ms total\\)\\s*$"));
+      QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+) \\((\\d+) ms total\\)\\s*$"));
 
   const QRegularExpression beginTestPattern  (
-      QLatin1String ("^(.*)\\[ RUN      \\] (\\w+)\\.(\\w+)\\s*$"));
+      QLatin1String ("^(.*)\\[ RUN      \\] ([\\w/]+)\\.([\\w/]+)\\s*$"));
   const QRegularExpression failTestPattern   (
-      QLatin1String ("^(.*)\\[  FAILED  \\] (\\w+)\\.(\\w+) \\((\\d+) ms\\)\\s*$"));
+      QLatin1String ("^(.*)\\[  FAILED  \\] ([\\w/]+)\\.([\\w/]+) \\((\\d+) ms\\)\\s*$"));
   const QRegularExpression passTestPattern   (
-      QLatin1String ("^(.*)\\[       OK \\] (\\w+)\\.(\\w+) \\((\\d+) ms\\)\\s*$"));
+      QLatin1String ("^(.*)\\[       OK \\] ([\\w/]+)\\.([\\w/]+) \\((\\d+) ms\\)\\s*$"));
   const QRegularExpression failDetailPattern (
       QLatin1String ("^(.+):(\\d+): Failure\\s*$"));
 }
@@ -46,6 +46,10 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   if (match.hasMatch ())
   {
     state.currentCase = match.captured (2);
+    if (match.lastCapturedIndex() == 4)
+    {
+      state.currentCase += QString (QLatin1String(" <%1>")).arg (match.captured (4));
+    }
     state.passedCount = state.failedCount = 0;
     model.addCase (state.currentCase);
     return;

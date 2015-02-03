@@ -57,6 +57,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
     int totalTime = match.captured (3).toInt ();
     model.updateCase (state.currentCase, state.passedCount, state.failedCount, totalTime);
     state.currentCase.clear ();
+    state.currentTest.clear ();
     return;
   }
 

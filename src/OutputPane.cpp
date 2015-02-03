@@ -19,12 +19,14 @@ OutputPane::OutputPane(QObject *parent) :
   model_ (new TestModel),
   state_ (new ParseState),
   widget_ (NULL),
-  totalsLabel_ (new QLabel)
+  totalsLabel_ (new QLabel),
+  disabledLabel_ (new QLabel)
 {
 }
 
 OutputPane::~OutputPane()
 {
+  delete disabledLabel_;
   delete totalsLabel_;
   delete model_;
   delete parser_;
@@ -43,7 +45,7 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
 QList<QWidget *> OutputPane::toolBarWidgets() const
 {
   QList<QWidget*> widgets;
-  widgets << totalsLabel_;
+  widgets << totalsLabel_ << disabledLabel_;
   return widgets;
 }
 
@@ -168,10 +170,11 @@ void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
 {
   if (state_->isGoogleTestRun)
   {
-    totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms)").arg (
+    totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms). ").arg (
                              state_->passedTotalCount).arg (
                              state_->passedTotalCount +
                              state_->failedTotalCount).arg (state_->totalTime));
+    disabledLabel_->setText(tr ("Disabled tests: %1. ").arg (state_->disabledCount));
     popup (WithFocus);
   }
   disconnect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),

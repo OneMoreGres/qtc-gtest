@@ -14,6 +14,9 @@ namespace
   const QRegularExpression gtestEndPattern   (
       QLatin1String ("^(.*)\\[==========\\] (\\d+) tests? from (\\d+) test cases? ran. \\((\\d+) ms total\\)\\s*$"));
   enum GtestEnd{GtestEndUnrelated = 1, GtestEndTestsRun, GtestEndCasesRun, GtestEndTimeSpent};
+  const QRegularExpression gtestDisabledPattern (
+      QLatin1String ("^\\s*YOU HAVE (\\d+) DISABLED TESTS\\s*$"));
+  enum GtestDisabled{GtestDisabledCount = 1};
 
   const QRegularExpression newCasePattern    (
       QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+)(, where TypeParam = (\\w+))?\\s*$"));
@@ -130,6 +133,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   if (match.hasMatch ())
   {
     state.totalTime = match.captured (GtestEndTimeSpent).toInt ();
+    return;
+  }
+
+  match = gtestDisabledPattern.match (line);
+  if (match.hasMatch ())
+  {
+    state.disabledCount = match.captured (GtestDisabledCount).toInt ();
     return;
   }
 

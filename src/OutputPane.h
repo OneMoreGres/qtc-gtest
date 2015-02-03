@@ -69,6 +69,7 @@ namespace QtcGtest {
 
         // toolBarWidgets
         QLabel* totalsLabel_;
+        QLabel* disabledLabel_;
     };
 
   } // namespace Internal

@@ -21,6 +21,7 @@ namespace QtcGtest {
       int passedTotalCount;
       int failedTotalCount;
       int totalTime;
+      int disabledCount;
   };
 
 } // namespace Internal

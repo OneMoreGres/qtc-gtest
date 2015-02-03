@@ -11,5 +11,5 @@ void ParseState::reset()
 {
   isGoogleTestRun = false;
   projectPath = currentCase = currentTest = QString ();
-  passedCount = passedTotalCount = failedCount = failedTotalCount = totalTime = 0;
+  passedCount = passedTotalCount = failedCount = failedTotalCount = totalTime = disabledCount = 0;
 }

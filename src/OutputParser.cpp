@@ -17,6 +17,9 @@ namespace
   const QRegularExpression gtestDisabledPattern (
       QLatin1String ("^\\s*YOU HAVE (\\d+) DISABLED TESTS\\s*$"));
   enum GtestDisabled{GtestDisabledCount = 1};
+  const QRegularExpression gtestFilterPattern (
+      QLatin1String ("^\\s*Note: (Google Test filter = .*)\\s*$"));
+  enum GtestFilter{GtestFilterLine = 1};
 
   const QRegularExpression newCasePattern    (
       QLatin1String ("^(.*)\\[\\-{10}\\] \\d+ tests? from ([\\w/]+)(, where TypeParam = (\\w+))?\\s*$"));
@@ -47,7 +50,8 @@ OutputParser::OutputParser(QObject *parent) :
 bool OutputParser::isGoogleTestRun(const QString &line) const
 {
   QRegularExpressionMatch match = gtestStartPattern.match (line);
-  return (match.hasMatch ());
+  QRegularExpressionMatch matchFilter = gtestFilterPattern.match (line);
+  return (match.hasMatch () || matchFilter.hasMatch ());
 }
 
 void OutputParser::parseMessage(const QString &line, TestModel &model, ParseState &state)
@@ -140,6 +144,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   if (match.hasMatch ())
   {
     state.disabledCount = match.captured (GtestDisabledCount).toInt ();
+    return;
+  }
+
+  match = gtestFilterPattern.match (line);
+  if (match.hasMatch ())
+  {
+    model.addNote(match.captured (GtestFilterLine));
     return;
   }
 

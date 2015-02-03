@@ -200,7 +200,9 @@ void OutputPane::parseMessage(ProjectExplorer::RunControl *control, const QStrin
     if (!state_->isGoogleTestRun)
     {
       state_->isGoogleTestRun = parser_->isGoogleTestRun (line);
-      continue;
+      if (!state_->isGoogleTestRun) {
+        continue;
+      }
     }
     parser_->parseMessage (line, *model_, *state_);
   }

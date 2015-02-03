@@ -22,7 +22,7 @@ namespace QtcGtest {
         };
         enum Type
         {
-          TypeCase, TypeTest, TypeDetail, TypeDetailError, TypeUnknown
+          TypeCase, TypeTest, TypeDetail, TypeDetailError, TypeNote, TypeUnknown
         };
 
       public:
@@ -46,6 +46,7 @@ namespace QtcGtest {
         void clear ();
 
       public slots:
+        void addNote (const QString& text);
         void addCase (const QString& name);
         void addTest (const QString& name, const QString& caseName);
         void addTestDetail (const QString& name, const QString& caseName, const QString& detail);

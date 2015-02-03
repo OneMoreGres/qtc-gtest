@@ -40,17 +40,17 @@ void PaneWidget::setCurrentIndex(const QModelIndex &index)
 
 void PaneWidget::spanDetailRows(const QModelIndex &parent, int start, int end)
 {
-  if (!parent.isValid()) {
-    return;
-  }
-  const TestModel* model = qobject_cast<const TestModel*> (parent.model ());
-  Q_ASSERT (model != NULL);
-  if (model->getType (parent) != TestModel::TypeTest)
-  {
-    return;
-  }
+  TestModel* model = qobject_cast<TestModel*> (ui->caseView->model());
   for (int i = start; i <= end; ++i)
   {
-    ui->caseView->setFirstColumnSpanned (i, parent, true);
+    QModelIndex added = model->index (start, TestModel::ColumnName, parent);
+    Q_ASSERT (added.isValid ());
+    TestModel::Type type = model->getType (added);
+    if (type == TestModel::TypeDetail ||
+        type == TestModel::TypeDetailError ||
+        type == TestModel::TypeNote)
+    {
+      ui->caseView->setFirstColumnSpanned (i, parent, true);
+    }
   }
 }

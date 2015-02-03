@@ -6,6 +6,7 @@ namespace
 {
   const QColor goodColor = QColor ("#33CC66");
   const QColor badColor = QColor ("#FF6666");
+  const QColor noteColor = QColor ("#F0E68C");
 }
 
 TestModel::TestModel(QObject *parent) :
@@ -203,6 +204,15 @@ void TestModel::clear()
 {
   removeRows (0, rowCount ());
   errorCount_ = 0;
+}
+
+void TestModel::addNote(const QString &text)
+{
+  Q_ASSERT (!text.isEmpty ());
+  QList<QStandardItem*> row = createRow (text, TypeNote);
+  invisibleRootItem ()->appendRow (row);
+  QModelIndex noteIndex = indexFromItem (row.first ());
+  setRowColor (noteIndex, noteColor);
 }
 
 void TestModel::addCase(const QString &name)

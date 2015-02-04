@@ -31,12 +31,16 @@ HEADERS += \
 FORMS += \
     src/PaneWidget.ui
 
+RESOURCES += \
+    resources.qrc
+
 TRANSLATIONS += \
     translation/QtcGtest_ru.ts
 
 OTHER_FILES += \
     LICENSE.md \
-    README.md
+    README.md \
+    images/README.md
 
 PROVIDER = Gres
 

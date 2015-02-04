@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QPointer>
+#include <QToolButton>
 
 #include <coreplugin/ioutputpane.h>
 #include <utils/outputformat.h>
@@ -70,6 +71,7 @@ namespace QtcGtest {
         // toolBarWidgets
         QLabel* totalsLabel_;
         QLabel* disabledLabel_;
+        QToolButton* togglePopupButton_;
     };
 
   } // namespace Internal

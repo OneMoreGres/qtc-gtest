@@ -20,12 +20,18 @@ OutputPane::OutputPane(QObject *parent) :
   state_ (new ParseState),
   widget_ (NULL),
   totalsLabel_ (new QLabel),
-  disabledLabel_ (new QLabel)
+  disabledLabel_ (new QLabel),
+  togglePopupButton_ (new QToolButton)
 {
+  togglePopupButton_->setCheckable (true);
+  togglePopupButton_->setChecked (true);
+  togglePopupButton_->setToolTip (tr ("Auto popup pane"));
+  togglePopupButton_->setIcon(QIcon(QLatin1String(":/images/popup.ico")));
 }
 
 OutputPane::~OutputPane()
 {
+  delete togglePopupButton_;
   delete disabledLabel_;
   delete totalsLabel_;
   delete model_;
@@ -45,7 +51,7 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
 QList<QWidget *> OutputPane::toolBarWidgets() const
 {
   QList<QWidget*> widgets;
-  widgets << totalsLabel_ << disabledLabel_;
+  widgets << togglePopupButton_ << totalsLabel_ << disabledLabel_;
   return widgets;
 }
 
@@ -175,7 +181,10 @@ void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
                              state_->passedTotalCount +
                              state_->failedTotalCount).arg (state_->totalTime));
     disabledLabel_->setText(tr ("Disabled tests: %1. ").arg (state_->disabledCount));
-    popup (WithFocus);
+    if (togglePopupButton_->isChecked())
+    {
+      popup (WithFocus);
+    }
   }
   disconnect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
               this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));

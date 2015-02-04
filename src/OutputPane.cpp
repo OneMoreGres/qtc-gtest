@@ -23,6 +23,8 @@ OutputPane::OutputPane(QObject *parent) :
   disabledLabel_ (new QLabel),
   togglePopupButton_ (new QToolButton)
 {
+  totalsLabel_->setMargin(5);
+
   togglePopupButton_->setCheckable (true);
   togglePopupButton_->setChecked (true);
   togglePopupButton_->setToolTip (tr ("Auto popup pane"));
@@ -176,11 +178,11 @@ void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
 {
   if (state_->isGoogleTestRun)
   {
-    totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms). ").arg (
+    totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms).").arg (
                              state_->passedTotalCount).arg (
                              state_->passedTotalCount +
                              state_->failedTotalCount).arg (state_->totalTime));
-    disabledLabel_->setText(tr ("Disabled tests: %1. ").arg (state_->disabledCount));
+    disabledLabel_->setText(tr ("Disabled tests: %1.").arg (state_->disabledCount));
     if (togglePopupButton_->isChecked())
     {
       popup (WithFocus);

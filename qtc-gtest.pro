@@ -1,5 +1,7 @@
 DEFINES += QTCGTEST_LIBRARY
 
+VERSION_SUFFIX = "_1"
+
 include(paths.pri)
 
 # QtcGtest files

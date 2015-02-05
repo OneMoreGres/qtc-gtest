@@ -1,5 +1,6 @@
 # Changelog
 ## v 3.3.0_1
+- Fixed prev/next error selection in pane.
 - Added ability to filter out successful tests.
 - Added margin to label.
 - Added ability to disable auto popup of the pane.

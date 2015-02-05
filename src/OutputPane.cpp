@@ -21,7 +21,8 @@ OutputPane::OutputPane(QObject *parent) :
   widget_ (NULL),
   totalsLabel_ (new QLabel),
   disabledLabel_ (new QLabel),
-  togglePopupButton_ (new QToolButton)
+  togglePopupButton_ (new QToolButton),
+  togglePassedButton_ (new QToolButton)
 {
   totalsLabel_->setMargin(5);
 
@@ -29,10 +30,16 @@ OutputPane::OutputPane(QObject *parent) :
   togglePopupButton_->setChecked (true);
   togglePopupButton_->setToolTip (tr ("Auto popup pane"));
   togglePopupButton_->setIcon(QIcon(QLatin1String(":/images/popup.ico")));
+
+  togglePassedButton_->setCheckable (true);
+  togglePassedButton_->setChecked (true);
+  togglePassedButton_->setToolTip (tr ("Show passed tests"));
+  togglePassedButton_->setIcon(QIcon(QLatin1String(":/images/passed.ico")));
 }
 
 OutputPane::~OutputPane()
 {
+  delete togglePassedButton_;
   delete togglePopupButton_;
   delete disabledLabel_;
   delete totalsLabel_;
@@ -47,13 +54,15 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
   widget_ = new PaneWidget (model_, parent); // Can be only 1?
   connect (widget_.data (), SIGNAL (viewClicked (const QModelIndex&)),
            this, SLOT (handleViewClicked (const QModelIndex&)));
+  connect (togglePassedButton_, SIGNAL (clicked (bool)),
+           widget_, SLOT (showPassed (bool)));
   return widget_.data ();
 }
 
 QList<QWidget *> OutputPane::toolBarWidgets() const
 {
   QList<QWidget*> widgets;
-  widgets << togglePopupButton_ << totalsLabel_ << disabledLabel_;
+  widgets << togglePopupButton_ << togglePassedButton_ << totalsLabel_ << disabledLabel_;
   return widgets;
 }
 
@@ -146,19 +155,20 @@ void OutputPane::showError(const QModelIndex &errorIndex)
 
 void OutputPane::handleViewClicked(const QModelIndex &index)
 {
-  const TestModel* model = qobject_cast<const TestModel*> (index.model ());
-  Q_ASSERT (model != NULL);
-  TestModel::Type type = model->getType (index);
+  Q_ASSERT (index.isValid());
+  const QSortFilterProxyModel* proxy = static_cast<const QSortFilterProxyModel*> (index.model ());
+  QModelIndex sourceIndex = proxy->mapToSource(index);
+  TestModel::Type type = model_->getType (sourceIndex);
   if (type == TestModel::TypeDetailError)
   {
-    showError (index);
+    showError (sourceIndex);
   }
   else if (type == TestModel::TypeDetail)
   {
-    QModelIndex previousError = model->previousError (index);
-    if (previousError.isValid () && previousError.parent ().row () == index.parent ().row ())
+    QModelIndex previousError = model_->previousError (sourceIndex);
+    if (previousError.isValid () && previousError.parent ().row () == sourceIndex.parent ().row ())
     {
-      showError (model->previousError (index));
+      showError (model_->previousError (sourceIndex));
     }
   }
 }
@@ -178,6 +188,7 @@ void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
 {
   if (state_->isGoogleTestRun)
   {
+    widget_->spanColumns ();
     totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms).").arg (
                              state_->passedTotalCount).arg (
                              state_->passedTotalCount +

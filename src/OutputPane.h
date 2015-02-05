@@ -72,6 +72,7 @@ namespace QtcGtest {
         QLabel* totalsLabel_;
         QLabel* disabledLabel_;
         QToolButton* togglePopupButton_;
+        QToolButton* togglePassedButton_;
     };
 
   } // namespace Internal

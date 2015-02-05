@@ -268,6 +268,18 @@ void TestModel::updateTest(const QString &name, const QString &caseName,
   setData (testIndex.sibling (row, ColumnFailed), isOk ? 0 : 1);
   setData (testIndex.sibling (row, ColumnTime), time);
   setRowColor (testIndex, isOk ? goodColor : badColor);
+  if (!isOk)
+  {
+    // Set ColumnFailed = -1 for fail messages to filter it later in proxy model.
+    for (int i = 0, end = rowCount (testIndex); i < end; ++i)
+    {
+      QModelIndex child = testIndex.child (i, ColumnFailed);
+      if (child.data ().isNull ())
+      {
+        setData (child, -1);
+      }
+    }
+  }
 }
 
 void TestModel::updateCase(const QString &name, int passedCount,

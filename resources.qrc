@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/popup.ico</file>
+        <file>images/passed.ico</file>
     </qresource>
 </RCC>

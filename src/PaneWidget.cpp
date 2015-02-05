@@ -5,19 +5,24 @@
 
 using namespace QtcGtest::Internal;
 
-PaneWidget::PaneWidget(QAbstractItemModel *model, QWidget *parent) :
+PaneWidget::PaneWidget(TestModel *model, QWidget *parent) :
   QWidget(parent),
-  ui(new Ui::PaneWidget)
+  ui(new Ui::PaneWidget),
+  model_ (model),
+  proxy_ (new QSortFilterProxyModel (this))
 {
   Q_ASSERT (model != NULL);
   ui->setupUi(this);
 
-  connect (model, SIGNAL (rowsInserted(const QModelIndex &, int, int)),
+  proxy_->setSourceModel (model);
+  proxy_->setFilterKeyColumn (TestModel::ColumnFailed);
+
+  connect (proxy_, SIGNAL (rowsInserted(const QModelIndex &, int, int)),
            this, SLOT (spanDetailRows(const QModelIndex &, int, int)));
   connect (ui->caseView, SIGNAL (clicked (const QModelIndex&)),
            this, SIGNAL (viewClicked (const QModelIndex&)));
 
-  ui->caseView->setModel (model);
+  ui->caseView->setModel (proxy_);
   ui->caseView->hideColumn (TestModel::ColumnType);
   ui->caseView->header ()->setSectionResizeMode(QHeaderView::ResizeToContents);
   ui->caseView->setItemDelegate (new AutoToolTipDelegate (ui->caseView));
@@ -38,19 +43,26 @@ void PaneWidget::setCurrentIndex(const QModelIndex &index)
   ui->caseView->setCurrentIndex (index);
 }
 
-void PaneWidget::spanDetailRows(const QModelIndex &parent, int start, int end)
+void PaneWidget::showPassed(bool show)
 {
-  TestModel* model = qobject_cast<TestModel*> (ui->caseView->model());
-  for (int i = start; i <= end; ++i)
+  // Filter out 0 and empty ColumnFailed
+  QString pattern = (show) ? QString () : QString (QLatin1String("-?[1-9]\\d*"));
+  proxy_->setFilterRegExp (pattern);
+  spanColumns ();
+}
+
+void PaneWidget::spanColumns()
+{
+  for (int i = 0, end = proxy_->rowCount(); i < end; ++i)
   {
-    QModelIndex added = model->index (start, TestModel::ColumnName, parent);
-    Q_ASSERT (added.isValid ());
-    TestModel::Type type = model->getType (added);
-    if (type == TestModel::TypeDetail ||
-        type == TestModel::TypeDetailError ||
-        type == TestModel::TypeNote)
+    QModelIndex caseIndex = proxy_->index (i, TestModel::ColumnName);
+    for (int ii = 0, iiEnd = proxy_->rowCount(caseIndex); ii < iiEnd; ++ii)
     {
-      ui->caseView->setFirstColumnSpanned (i, parent, true);
+      QModelIndex testIndex = proxy_->index (ii, TestModel::ColumnName, caseIndex);
+      for (int iii = 0, iiiEnd = proxy_->rowCount(testIndex); iii < iiiEnd; ++iii)
+      {
+        ui->caseView->setFirstColumnSpanned (iii, testIndex, true);
+      }
     }
   }
 }

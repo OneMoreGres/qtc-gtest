@@ -158,8 +158,7 @@ void OutputPane::showError(const QModelIndex &errorIndex)
 void OutputPane::handleViewClicked(const QModelIndex &index)
 {
   Q_ASSERT (index.isValid());
-  const QSortFilterProxyModel* proxy = static_cast<const QSortFilterProxyModel*> (index.model ());
-  QModelIndex sourceIndex = proxy->mapToSource(index);
+  QModelIndex sourceIndex = widget_->testModelIndex (index);
   TestModel::Type type = model_->getType (sourceIndex);
   if (type == TestModel::TypeDetailError)
   {

@@ -79,6 +79,8 @@ int OutputPane::priorityInStatusBar() const
 void OutputPane::clearContents()
 {
   model_->clear ();
+  totalsLabel_->clear ();
+  disabledLabel_->clear ();
 }
 
 void OutputPane::visibilityChanged(bool visible)

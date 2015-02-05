@@ -17,8 +17,6 @@ PaneWidget::PaneWidget(TestModel *model, QWidget *parent) :
   proxy_->setSourceModel (model);
   proxy_->setFilterKeyColumn (TestModel::ColumnFailed);
 
-  connect (proxy_, SIGNAL (rowsInserted(const QModelIndex &, int, int)),
-           this, SLOT (spanDetailRows(const QModelIndex &, int, int)));
   connect (ui->caseView, SIGNAL (clicked (const QModelIndex&)),
            this, SIGNAL (viewClicked (const QModelIndex&)));
 

@@ -131,14 +131,14 @@ bool OutputPane::canPrevious() const
 void OutputPane::goToNext()
 {
   Q_ASSERT (!widget_.isNull ());
-  QModelIndex currentIndex = widget_->currentIndex ();
+  QModelIndex currentIndex = widget_->testModelIndex (widget_->currentIndex ());
   showError (model_->nextError (currentIndex));
 }
 
 void OutputPane::goToPrev()
 {
   Q_ASSERT (!widget_.isNull ());
-  QModelIndex currentIndex = widget_->currentIndex ();
+  QModelIndex currentIndex = widget_->testModelIndex (widget_->currentIndex ());
   showError (model_->previousError (currentIndex));
 }
 
@@ -148,7 +148,7 @@ void OutputPane::showError(const QModelIndex &errorIndex)
   {
     return;
   }
-  widget_->setCurrentIndex (errorIndex);
+  widget_->setCurrentIndex (widget_->proxyIndex(errorIndex));
   int row = errorIndex.row ();
   QString file = errorIndex.sibling (row, TestModel::ColumnFile).data ().toString ();
   int line = errorIndex.sibling (row, TestModel::ColumnLine).data ().toInt ();

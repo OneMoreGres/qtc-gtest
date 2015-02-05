@@ -72,23 +72,23 @@ QModelIndex TestModel::previousError(const QModelIndex &index) const
     --currentCase;
   }
 
-  for (int i = currentCase; i >= 0; --i)
+  for (; currentCase >= 0; --currentCase)
   {
-    QModelIndex caseIndex = this->index (i, 0);
+    QModelIndex caseIndex = this->index (currentCase, 0);
     if (currentTest == -1)
     {
-      currentTest = rowCount (caseIndex);
+      currentTest = rowCount (caseIndex) - 1;
     }
-    for (int ii = currentTest; ii >= 0; --ii)
+    for (; currentTest >= 0; --currentTest)
     {
-      QModelIndex testIndex = this->index (ii, 0, caseIndex);
+      QModelIndex testIndex = this->index (currentTest, 0, caseIndex);
       if (currentDetail == -1)
       {
-        currentDetail = rowCount (testIndex);
+        currentDetail = rowCount (testIndex) - 1;
       }
-      for (int iii = currentDetail; iii >= 0; --iii)
+      for (; currentDetail >= 0; --currentDetail)
       {
-        QModelIndex detailIndex = this->index (iii, 0, testIndex);
+        QModelIndex detailIndex = this->index (currentDetail, 0, testIndex);
         if (getType (detailIndex) == TypeDetailError)
         {
           return detailIndex;
@@ -108,15 +108,15 @@ QModelIndex TestModel::nextError(const QModelIndex &index) const
     ++currentDetail;
   }
 
-  for (int i = currentCase, iEnd = rowCount (); i < iEnd; ++i)
+  for (int iEnd = rowCount (); currentCase < iEnd; ++currentCase)
   {
-    QModelIndex caseIndex = this->index (i, 0);
-    for (int ii = currentTest, iiEnd = rowCount (caseIndex); ii < iiEnd; ++ii)
+    QModelIndex caseIndex = this->index (currentCase, 0);
+    for (int iiEnd = rowCount (caseIndex); currentTest < iiEnd; ++currentTest)
     {
-      QModelIndex testIndex = this->index (ii, 0, caseIndex);
-      for (int iii = currentDetail, iiiEnd = rowCount (testIndex); iii < iiiEnd; ++iii)
+      QModelIndex testIndex = this->index (currentTest, 0, caseIndex);
+      for (int iiiEnd = rowCount (testIndex); currentDetail < iiiEnd; ++currentDetail)
       {
-        QModelIndex detailIndex = this->index (iii, 0, testIndex);
+        QModelIndex detailIndex = this->index (currentDetail, 0, testIndex);
         if (getType (detailIndex) == TypeDetailError)
         {
           return detailIndex;

@@ -41,6 +41,16 @@ void PaneWidget::setCurrentIndex(const QModelIndex &index)
   ui->caseView->setCurrentIndex (index);
 }
 
+QModelIndex PaneWidget::testModelIndex(const QModelIndex &proxyIndex) const
+{
+  return proxy_->mapToSource(proxyIndex);
+}
+
+QModelIndex PaneWidget::proxyIndex(const QModelIndex &testModelIndex) const
+{
+  return proxy_->mapFromSource(testModelIndex);
+}
+
 void PaneWidget::showPassed(bool show)
 {
   // Filter out 0 and empty ColumnFailed

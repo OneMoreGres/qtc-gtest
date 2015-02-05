@@ -23,6 +23,8 @@ namespace QtcGtest {
       public:
         QModelIndex currentIndex () const;
         void setCurrentIndex (const QModelIndex& index);
+        QModelIndex testModelIndex (const QModelIndex& proxyIndex) const;
+        QModelIndex proxyIndex (const QModelIndex& testModelIndex) const;
 
       public slots:
         void showPassed (bool show);

@@ -210,6 +210,7 @@ void TestModel::addNote(const QString &text)
 {
   Q_ASSERT (!text.isEmpty ());
   QList<QStandardItem*> row = createRow (text, TypeNote);
+  row.at(ColumnFailed)->setText (QLatin1String ("-1"));
   invisibleRootItem ()->appendRow (row);
   QModelIndex noteIndex = indexFromItem (row.first ());
   setRowColor (noteIndex, noteColor);

@@ -25,7 +25,9 @@ namespace
   const QString gtestInclude = QLatin1String ("gtest.h");
   const QString gtestFilter = QLatin1String ("--gtest_filter=%1");
   const QString gtestFilterSeparator = QLatin1String (":");
-  const QRegularExpression testPattern (QLatin1String ("(?:TEST|TEST_F)\\s*\\((\\w+),\\s*\\w+\\)"));
+  const QRegularExpression testPattern (
+      QLatin1String ("(TEST|TEST_F|TYPED_TEST|TYPED_TEST_P|TEST_P)\\s*\\((\\w+),\\s*\\w+\\)"));
+  enum Test {TestType = 1, TestCase, TestName};
 
 
   QString shortenFileName (const QString& file)
@@ -39,6 +41,11 @@ namespace
 TestProject::TestProject(QObject *parent) :
   QObject(parent)
 {
+  testFilterPatterns_[QLatin1String ("TYPED_TEST")] = QLatin1String ("%1/*.*");
+  testFilterPatterns_[QLatin1String ("TYPED_TEST_P")] = QLatin1String ("*/%1/*.*");
+  testFilterPatterns_[QLatin1String ("TEST_P")] = QLatin1String ("*/%1.*");
+  testFilterPatterns_[QLatin1String ("TEST")] = QLatin1String ("%1.*");
+  testFilterPatterns_[QLatin1String ("TEST_F")] = QLatin1String ("%1.*");
 }
 
 void TestProject::checkProject()
@@ -161,7 +168,10 @@ QStringList TestProject::getTestCases(const QSet<QString> &fileNames) const
     while (i.hasNext())
     {
       QRegularExpressionMatch match = i.next();
-      testCases << (match.captured (1) + QLatin1String (".*"));
+      QString caseType = match.captured (TestType);
+      Q_ASSERT(testFilterPatterns_.contains(caseType));
+      QString pattern = testFilterPatterns_[caseType].arg (match.captured (TestCase));
+      testCases << pattern;
     }
   }
   testCases.removeDuplicates ();

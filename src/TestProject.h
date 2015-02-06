@@ -46,6 +46,7 @@ namespace QtcGtest {
         QStringList changedFiles_;
         QStringList gtestIncludeFiles_;
         QHash<QString, QStringList> dependencyTable_;
+        QHash<QString, QString> testFilterPatterns_;
     };
 
   } // namespace Internal

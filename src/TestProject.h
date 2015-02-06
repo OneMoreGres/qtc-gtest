@@ -36,7 +36,7 @@ namespace QtcGtest {
         QStringList getChangedFiles (int beginRow, int endRow, bool modifiedFlag) const;
         void runTestsForFiles (const QStringList& files, CustomRunConfiguration* configuration) const;
         CustomRunConfiguration *parse(ProjectExplorer::Project *project);
-        QString gtestMainInclude () const;
+        QStringList gtestMainIncludes () const;
         void preprocessDependencyTable ();
         void runTests (CustomRunConfiguration *configuration) const;
         QStringList getTestCases (const QSet<QString> &fileNames) const;
@@ -44,7 +44,7 @@ namespace QtcGtest {
 
       private:
         QStringList changedFiles_;
-        QString gtestIncludeFile_;
+        QStringList gtestIncludeFiles_;
         QHash<QString, QStringList> dependencyTable_;
     };
 

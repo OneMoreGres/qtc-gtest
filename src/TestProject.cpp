@@ -101,12 +101,10 @@ void TestProject::checkCurrent()
 void TestProject::runTestsForFiles(const QStringList &files, CustomRunConfiguration *configuration) const
 {
   Q_ASSERT (configuration != NULL);
-  Q_ASSERT (gtestIncludeFile_.isEmpty ());
-  QString gtestFile = shortenFileName (gtestIncludeFile_);
-  QSet<QString> testFiles = dependencyTable_.value (gtestFile).toSet ();
-
-  QStringList dependentFiles = getDependentFiles (files);
-  testFiles.intersect (dependentFiles.toSet ());
+  Q_ASSERT (!gtestIncludeFiles_.isEmpty ());
+  QSet<QString> testFiles = getDependentFiles (gtestIncludeFiles_).toSet ();
+  QSet<QString> dependentFiles = getDependentFiles (files).toSet ();
+  testFiles.intersect (dependentFiles);
   if (testFiles.isEmpty ())
   {
     return;
@@ -222,8 +220,8 @@ CustomRunConfiguration *TestProject::parse(Project *project)
     const QString& fileName = i.key ();
     dependencyTable_[fileName] = snapshot.filesDependingOn (fileName);
   }
-  gtestIncludeFile_ = gtestMainInclude ();
-  if (gtestIncludeFile_.isEmpty ())
+  gtestIncludeFiles_ = gtestMainIncludes ();
+  if (gtestIncludeFiles_.isEmpty ())
   {
     return NULL;
   }
@@ -245,16 +243,18 @@ CustomRunConfiguration *TestProject::parse(Project *project)
   return config;
 }
 
-QString TestProject::gtestMainInclude() const
+QStringList TestProject::gtestMainIncludes() const
 {
+  QStringList gtestHeaders; // List because projects can have unique gtest.h includes.
   foreach (const QString& file, dependencyTable_.keys ())
   {
     if (file.endsWith (QLatin1Char('/') + gtestInclude)) // Should work fine because file contains full path
     {
-      return file;
+      gtestHeaders << file;
     }
   }
-  return QString ();
+  gtestHeaders.removeDuplicates();
+  return gtestHeaders;
 }
 
 void TestProject::preprocessDependencyTable()

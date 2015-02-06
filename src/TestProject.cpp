@@ -84,6 +84,10 @@ void TestProject::checkCurrent()
   }
 
   IDocument* document = EditorManager::currentDocument ();
+  if (document == NULL)
+  {
+    return;
+  }
   QString file = document->filePath ();
   QStringList files = project->files (Project::ExcludeGeneratedFiles);
   if (!files.contains (file))

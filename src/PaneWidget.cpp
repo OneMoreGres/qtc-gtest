@@ -64,6 +64,13 @@ void PaneWidget::spanColumns()
   for (int i = 0, end = proxy_->rowCount(); i < end; ++i)
   {
     QModelIndex caseIndex = proxy_->index (i, TestModel::ColumnName);
+    QModelIndex typeIndex = proxy_->index (i, TestModel::ColumnType);
+    TestModel::Type caseType = TestModel::Type (typeIndex.data ().toInt ());
+    if (caseType == TestModel::TypeNote)
+    {
+      ui->caseView->setFirstColumnSpanned (i, QModelIndex (), true);
+      continue;
+    }
     for (int ii = 0, iiEnd = proxy_->rowCount(caseIndex); ii < iiEnd; ++ii)
     {
       QModelIndex testIndex = proxy_->index (ii, TestModel::ColumnName, caseIndex);

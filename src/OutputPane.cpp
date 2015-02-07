@@ -55,7 +55,7 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
   connect (widget_.data (), SIGNAL (viewClicked (const QModelIndex&)),
            this, SLOT (handleViewClicked (const QModelIndex&)));
   connect (togglePassedButton_, SIGNAL (clicked (bool)),
-           widget_, SLOT (showPassed (bool)));
+           widget_.data (), SLOT (showPassed (bool)));
   return widget_.data ();
 }
 

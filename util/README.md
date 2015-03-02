@@ -1,4 +1,6 @@
 # Changelog
+## v 3.3.1
+Fixed wrong handling of parameterized tests failure.
 ## v 3.3.0_1
 - Fixed prev/next error selection in pane.
 - Added ability to filter out successful tests.

@@ -32,8 +32,9 @@ namespace
       QLatin1String (R"(^(.*)\[ RUN      \] ([\w/]+)\.([\w/]+)\s*$)"));
   enum NewTest{NewTestUnrelated = 1, NewTestCaseName, NewTestName};
   const QRegularExpression failTestPattern   (
-      QLatin1String (R"(^(.*)\[  FAILED  \] ([\w/]+)\.([\w/]+) \((\d+) ms\)\s*$)"));
-  enum FailTest{FailTestUnrelated = 1, FailTestCaseName, FailTestName, FailTestTimeSpent};
+      QLatin1String (R"(^(.*)\[  FAILED  \] ([\w/]+)\.([\w/]+)(, where (GetParam\(\)|TypeParam) = (.+))? \((\d+) ms\)\s*$)"));
+  enum FailTest{FailTestUnrelated = 1, FailTestCaseName, FailTestName, FailTestFullParameter,
+                FailTestParameterType, FailTestParameterDetail, FailTestTimeSpent};
   const QRegularExpression passTestPattern   (
       QLatin1String (R"(^(.*)\[       OK \] ([\w/]+)\.([\w/]+) \((\d+) ms\)\s*$)"));
   enum PassTest{PassTestUnrelated = 1, PassTestCaseName, PassTestName, PassTestTimeSpent};
@@ -114,6 +115,11 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
     ++state.failedTotalCount;
     int totalTime = match.captured (FailTestTimeSpent).toInt ();
     model.updateTest (state.currentTest, state.currentCase, false, totalTime);
+    QString parameterDetail = match.captured(FailTestParameterDetail);
+    if (!parameterDetail.isEmpty()) {
+      QString newTestName = state.currentTest + QString (QLatin1String(" <%1>")).arg (parameterDetail);
+      model.renameTest (state.currentTest, newTestName, state.currentCase);
+    }
     state.currentTest.clear ();
     return;
   }

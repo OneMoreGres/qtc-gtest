@@ -295,3 +295,14 @@ void TestModel::updateCase(const QString &name, int passedCount,
   setData (caseIndex.sibling (row, ColumnTime), time);
   setRowColor (caseIndex, (failedCount == 0) ? goodColor : badColor);
 }
+
+void TestModel::renameTest(const QString &oldName, const QString &newName,
+                           const QString &caseName)
+{
+  Q_ASSERT (!oldName.isEmpty ());
+  Q_ASSERT (!caseName.isEmpty ());
+  QModelIndex testIndex = this->testIndex (oldName, caseName);
+  Q_ASSERT (testIndex.isValid ());
+  Q_ASSERT (!newName.isEmpty ());
+  setData (testIndex, newName);
+}

@@ -5,16 +5,15 @@
 
 using namespace QtcGtest::Internal;
 
-PaneWidget::PaneWidget(TestModel *model, QWidget *parent) :
+PaneWidget::PaneWidget(const QSharedPointer<TestModel> &model, QWidget *parent) :
   QWidget(parent),
   ui(new Ui::PaneWidget),
   model_ (model),
   proxy_ (new QSortFilterProxyModel (this))
 {
-  Q_ASSERT (model != NULL);
   ui->setupUi(this);
 
-  proxy_->setSourceModel (model);
+  proxy_->setSourceModel (model.data());
   proxy_->setFilterKeyColumn (TestModel::ColumnFailed);
 
   connect (ui->caseView, SIGNAL (clicked (const QModelIndex&)),

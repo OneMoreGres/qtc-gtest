@@ -43,7 +43,6 @@ OutputPane::~OutputPane()
   delete togglePopupButton_;
   delete disabledLabel_;
   delete totalsLabel_;
-  delete model_;
   delete parser_;
   delete state_;
 }

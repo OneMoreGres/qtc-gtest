@@ -62,7 +62,7 @@ namespace QtcGtest {
 
       private:
         OutputParser* parser_;
-        TestModel* model_;
+        QSharedPointer<TestModel> model_;
         ParseState* state_;
 
         // output widget

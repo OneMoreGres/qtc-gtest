@@ -17,7 +17,7 @@ namespace QtcGtest {
         Q_OBJECT
 
       public:
-        explicit PaneWidget(TestModel* model, QWidget *parent = 0);
+        explicit PaneWidget(const QSharedPointer<TestModel> &model, QWidget *parent = 0);
         ~PaneWidget();
 
       public:
@@ -35,7 +35,7 @@ namespace QtcGtest {
 
       private:
         Ui::PaneWidget *ui;
-        TestModel* model_;
+        QSharedPointer<TestModel> model_;
         QSortFilterProxyModel* proxy_;
     };
 

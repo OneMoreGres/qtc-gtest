@@ -1,6 +1,8 @@
 # Changelog
 ## v 3.3.1
-Fixed wrong handling of parameterized tests failure.
+- Fixed wrong handling of parameterized tests failure.
+- Improved msvc support.
+- Fixed possible crash at qt creator termination.
 ## v 3.3.0_1
 - Fixed prev/next error selection in pane.
 - Added ability to filter out successful tests.

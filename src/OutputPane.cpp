@@ -177,6 +177,8 @@ void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
 {
   state_->reset ();
   model_->clear ();
+  totalsLabel_->clear ();
+  disabledLabel_->clear ();
   state_->projectPath = control->runConfiguration ()->target ()->
                         activeBuildConfiguration ()->buildDirectory ().toString ();
   connect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),

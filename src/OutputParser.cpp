@@ -39,7 +39,7 @@ namespace
       QLatin1String ("^(.*)\\[       OK \\] ([\\w/]+)\\.([\\w/]+) \\((\\d+) ms\\)\\s*$"));
   enum PassTest{PassTestUnrelated = 1, PassTestCaseName, PassTestName, PassTestTimeSpent};
   const QRegularExpression failDetailPattern (
-      QLatin1String ("^(.+):(\\d+): Failure\\s*$"));
+      QLatin1String ("^(.+)[\\(:](\\d+)\\)?: (?:Failure|error).*$"));
   enum FailDetail{FailDetailFileName = 1, FailDetailLine};
 }
 

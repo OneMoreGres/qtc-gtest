@@ -15,7 +15,7 @@ namespace
       QLatin1String ("^(.*)\\[==========\\] (\\d+) tests? from (\\d+) test cases? ran. \\((\\d+) ms total\\)\\s*$"));
   enum GtestEnd{GtestEndUnrelated = 1, GtestEndTestsRun, GtestEndCasesRun, GtestEndTimeSpent};
   const QRegularExpression gtestDisabledPattern (
-      QLatin1String ("^\\s*YOU HAVE (\\d+) DISABLED TESTS\\s*$"));
+      QLatin1String ("^\\s*YOU HAVE (\\d+) DISABLED TESTS?\\s*$"));
   enum GtestDisabled{GtestDisabledCount = 1};
   const QRegularExpression gtestFilterPattern (
       QLatin1String ("^\\s*Note: (Google Test filter = .*)\\s*$"));

@@ -1,3 +1,4 @@
+#include <QAbstractItemModel>
 #include <QAction>
 #include <QTranslator>
 #include <QMenu>

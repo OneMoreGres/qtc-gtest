@@ -19,4 +19,7 @@ Plugin integrates some [Google Test](https://code.google.com/p/googletest/ "Goog
 2. In `Tools->Google Test` menu select appropriate entry.
 3. Depending on chosen menu entry, plugin will generate run arguments for active project and launch it.
  
+##Downloads
+Built plugin can be downloaded [here](https://sourceforge.net/projects/qtc-gtest/files/bin/ "Sourceforge")
+
 >Note: Tests from changed files or current file will be run only if they belong to active project.

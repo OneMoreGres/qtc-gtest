@@ -42,7 +42,8 @@ TRANSLATIONS += \
 OTHER_FILES += \
     LICENSE.md \
     README.md \
-    images/README.md
+    images/README.md \
+    util/README.md
 
 PROVIDER = Gres
 

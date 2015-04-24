@@ -1,4 +1,7 @@
 # Changelog
+## v 3.4.0
+- QTC version update
+- Now capture single disabled test
 ## v 3.3.1
 - Fixed wrong handling of parameterized tests failure.
 - Improved msvc support.

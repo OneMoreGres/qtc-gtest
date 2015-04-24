@@ -2,6 +2,7 @@
 #include <QTranslator>
 #include <QMenu>
 #include <QCoreApplication>
+#include <QAbstractItemModel>
 
 #include <coreplugin/icore.h>
 #include <coreplugin/coreconstants.h>

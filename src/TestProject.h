@@ -5,6 +5,8 @@
 #include <QHash>
 #include <QStringList>
 
+#include <utils/fileutils.h>
+
 namespace ProjectExplorer
 {
   class Project;
@@ -33,19 +35,19 @@ namespace QtcGtest {
         void handleDocumentsClose (const QModelIndex &parent, int start, int end);
 
       private:
-        QStringList getChangedFiles (int beginRow, int endRow, bool modifiedFlag) const;
-        void runTestsForFiles (const QStringList& files, CustomRunConfiguration* configuration) const;
+        Utils::FileNameList getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const;
+        void runTestsForFiles (const Utils::FileNameList &files, CustomRunConfiguration* configuration) const;
         CustomRunConfiguration *parse(ProjectExplorer::Project *project);
-        QStringList gtestMainIncludes () const;
+        Utils::FileNameList gtestMainIncludes() const;
         void preprocessDependencyTable ();
         void runTests (CustomRunConfiguration *configuration) const;
-        QStringList getTestCases (const QSet<QString> &fileNames) const;
-        QStringList getDependentFiles (const QStringList& files) const;
+        QStringList getTestCases (const QSet<Utils::FileName> &fileNames) const;
+        Utils::FileNameList getDependentFiles(const Utils::FileNameList &files) const;
 
       private:
-        QStringList changedFiles_;
-        QStringList gtestIncludeFiles_;
-        QHash<QString, QStringList> dependencyTable_;
+        Utils::FileNameList changedFiles_;
+        Utils::FileNameList gtestIncludeFiles_;
+        QHash<Utils::FileName, Utils::FileNameList> dependencyTable_;
         QHash<QString, QString> testFilterPatterns_;
     };
 

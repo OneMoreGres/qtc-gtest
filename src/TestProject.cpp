@@ -9,6 +9,8 @@
 #include <projectexplorer/session.h>
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/target.h>
+#include <coreplugin/editormanager/editormanager.h>
+#include <coreplugin/idocument.h>
 
 #include "TestProject.h"
 #include "CustomRunConfiguration.h"
@@ -19,6 +21,7 @@ using namespace Core;
 using namespace ProjectExplorer;
 using namespace CppTools;
 using namespace CPlusPlus;
+using namespace Utils;
 
 namespace
 {
@@ -30,10 +33,10 @@ namespace
   enum Test {TestType = 1, TestCase, TestName};
 
 
-  QString shortenFileName (const QString& file)
+  FileName shortenFileName (const FileName& file)
   {
-    QFileInfo f (file);
-    QString newName = f.absolutePath () + QLatin1Char ('/') + f.baseName ();
+    QFileInfo f (file.toString ());
+    FileName newName = FileName::fromString (f.absolutePath () + QLatin1Char ('/') + f.baseName ());
     return newName;
   }
 }
@@ -95,22 +98,22 @@ void TestProject::checkCurrent()
   {
     return;
   }
-  QString file = document->filePath ();
+  FileName file = document->filePath ();
   QStringList files = project->files (Project::ExcludeGeneratedFiles);
-  if (!files.contains (file))
+  if (!files.contains (file.toString ()))
   {
     return;
   }
 
-  runTestsForFiles (QStringList () << file, configuration);
+  runTestsForFiles (FileNameList () << file, configuration);
 }
 
-void TestProject::runTestsForFiles(const QStringList &files, CustomRunConfiguration *configuration) const
+void TestProject::runTestsForFiles(const FileNameList &files, CustomRunConfiguration *configuration) const
 {
   Q_ASSERT (configuration != NULL);
   Q_ASSERT (!gtestIncludeFiles_.isEmpty ());
-  QSet<QString> testFiles = getDependentFiles (gtestIncludeFiles_).toSet ();
-  QSet<QString> dependentFiles = getDependentFiles (files).toSet ();
+  QSet<FileName> testFiles = getDependentFiles (gtestIncludeFiles_).toSet ();
+  QSet<FileName> dependentFiles = getDependentFiles (files).toSet ();
   testFiles.intersect (dependentFiles);
   if (testFiles.isEmpty ())
   {
@@ -127,20 +130,20 @@ void TestProject::runTestsForFiles(const QStringList &files, CustomRunConfigurat
   runTests (configuration);
 }
 
-QStringList TestProject::getDependentFiles(const QStringList &files) const
+FileNameList TestProject::getDependentFiles(const FileNameList &files) const
 {
-  QStringList dependentFiles;
-  QStringList uncheckedFiles = files;
+  FileNameList dependentFiles;
+  FileNameList uncheckedFiles = files;
   while (!uncheckedFiles.isEmpty ())
   {
-    QString file = uncheckedFiles.takeFirst ();
+    FileName file = uncheckedFiles.takeFirst ();
     if (dependentFiles.contains (file))
     {
       continue;
     }
     dependentFiles << file;
-    QString newName = shortenFileName (file);
-    QStringList newFiles = dependencyTable_.value (newName);
+    FileName newName = shortenFileName (file);
+    FileNameList newFiles = dependencyTable_.value (newName);
     if (!newFiles.isEmpty ())
     {
       dependentFiles += newFiles;
@@ -151,12 +154,12 @@ QStringList TestProject::getDependentFiles(const QStringList &files) const
   return dependentFiles;
 }
 
-QStringList TestProject::getTestCases(const QSet<QString> &fileNames) const
+QStringList TestProject::getTestCases(const QSet<FileName> &fileNames) const
 {
   QStringList testCases;
-  foreach (const QString& file, fileNames)
+  foreach (const FileName& file, fileNames)
   {
-    QFile f (file);
+    QFile f (file.toString ());
     if (!f.open (QFile::ReadOnly))
     {
       continue;
@@ -190,9 +193,9 @@ void TestProject::handleDocumentsClose(const QModelIndex &parent, int start, int
   changedFiles_ = getChangedFiles (start, end, true); // Documents were modified before remove.
 }
 
-QStringList TestProject::getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const
+FileNameList TestProject::getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const
 {
-  QStringList files;
+  FileNameList files;
   for (int row = beginRow; row <= endRow; ++row)
   {
     DocumentModel::Entry* entry = DocumentModel::entryAtRow (row);
@@ -227,7 +230,7 @@ CustomRunConfiguration *TestProject::parse(Project *project)
   dependencyTable_.clear ();
   for (Snapshot::const_iterator i = snapshot.begin (), end = snapshot.end (); i != end; ++i)
   {
-    const QString& fileName = i.key ();
+    const FileName& fileName = i.key ();
     dependencyTable_[fileName] = snapshot.filesDependingOn (fileName);
   }
   gtestIncludeFiles_ = gtestMainIncludes ();
@@ -253,10 +256,10 @@ CustomRunConfiguration *TestProject::parse(Project *project)
   return config;
 }
 
-QStringList TestProject::gtestMainIncludes() const
+FileNameList TestProject::gtestMainIncludes() const
 {
-  QStringList gtestHeaders; // List because projects can have unique gtest.h includes.
-  foreach (const QString& file, dependencyTable_.keys ())
+  FileNameList gtestHeaders; // List because projects can have unique gtest.h includes.
+  foreach (const FileName& file, dependencyTable_.keys ())
   {
     if (file.endsWith (QLatin1Char('/') + gtestInclude)) // Should work fine because file contains full path
     {
@@ -269,11 +272,11 @@ QStringList TestProject::gtestMainIncludes() const
 
 void TestProject::preprocessDependencyTable()
 {
-  QHash<QString, QStringList> newTable;
-  for (QHash<QString, QStringList>::ConstIterator i = dependencyTable_.constBegin (),
+  QHash<FileName, FileNameList> newTable;
+  for (QHash<FileName, FileNameList>::ConstIterator i = dependencyTable_.constBegin (),
        end = dependencyTable_.constEnd (); i != end; ++i)
   {
-    QString newName = shortenFileName (i.key ());
+    FileName newName = shortenFileName (i.key ());
     newTable [newName] += i.value ();
   }
   dependencyTable_ = newTable;

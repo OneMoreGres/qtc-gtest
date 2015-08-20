@@ -98,21 +98,21 @@ void QtcGtestPlugin::initMenus()
   Core::Command *checkProjectCmd = ActionManager::registerAction(
                                      checkProjectAction, Constants::ACTION_CHECK_PROJECT_ID,
                                      Context(Core::Constants::C_GLOBAL));
-  checkProjectCmd->setDefaultKeySequence (QKeySequence (tr ("Alt+T,Alt+A")));
+  checkProjectCmd->setDefaultKeySequence (QKeySequence (tr ("Ctrl+Alt+T,A")));
   connect(checkProjectAction, SIGNAL(triggered()), testProject_, SLOT(checkProject()));
 
   QAction *checkCurrentAction = new QAction(tr("Check current"), this);
   Core::Command *checkCurrentCmd = ActionManager::registerAction(
                                      checkCurrentAction, Constants::ACTION_CHECK_CURRENT_ID,
                                      Context(Core::Constants::C_GLOBAL));
-  checkCurrentCmd->setDefaultKeySequence (QKeySequence (tr ("Alt+T,Alt+C")));
+  checkCurrentCmd->setDefaultKeySequence (QKeySequence (tr ("Ctrl+Alt+T,C")));
   connect(checkCurrentAction, SIGNAL(triggered()), testProject_, SLOT(checkCurrent()));
 
   QAction *checkChangedAction = new QAction(tr("Check changed"), this);
   Core::Command *checkChangedCmd = ActionManager::registerAction(
                                      checkChangedAction, Constants::ACTION_CHECK_CHANGED_ID,
                                      Context(Core::Constants::C_GLOBAL));
-  checkChangedCmd->setDefaultKeySequence (QKeySequence (tr ("Alt+T,Alt+T")));
+  checkChangedCmd->setDefaultKeySequence (QKeySequence (tr ("Ctrl+Alt+T,T")));
   connect(checkChangedAction, SIGNAL(triggered()), testProject_, SLOT(checkChanged()));
 
   ActionContainer *menu = ActionManager::createMenu(Constants::MENU_ID);

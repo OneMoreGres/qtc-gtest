@@ -1,4 +1,9 @@
 # Changelog
+## v 3.5.0
+- QTC version update
+- Fixed wrong dynamic libraries search paths
+- Fixed subdirs projects parse errors
+- Default keybindings changed
 ## v 3.4.0
 - QTC version update
 - Now capture single disabled test

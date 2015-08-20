@@ -65,7 +65,7 @@ void TestProject::runTests(CustomRunConfiguration *configuration) const
 {
   Q_ASSERT (configuration != NULL);
   ProjectExplorerPlugin* plugin = ProjectExplorerPlugin::instance ();
-  plugin->runRunConfiguration (configuration, NormalRunMode, true);
+  plugin->runRunConfiguration (configuration, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
   configuration->deleteLater ();
 }
 

@@ -2,6 +2,7 @@
 #define CUSTOMRUNCONFIGURATION_H
 
 #include <projectexplorer/localapplicationrunconfiguration.h>
+#include <utils/environment.h>
 
 namespace ProjectExplorer
 {
@@ -22,6 +23,7 @@ namespace QtcGtest {
         ProjectExplorer::ApplicationLauncher::Mode runMode() const;
         QString workingDirectory() const;
         QString commandLineArguments() const;
+        void addToBaseEnvironment(Utils::Environment &env) const;
 
         void setArguments (const QString& arguments);
 
@@ -30,6 +32,7 @@ namespace QtcGtest {
         ProjectExplorer::ApplicationLauncher::Mode runMode_;
         QString workingDirectory_;
         QString commandLineArguments_;
+        Utils::Environment environment_;
     };
   } // namespace Internal
 } // namespace QtcGtest

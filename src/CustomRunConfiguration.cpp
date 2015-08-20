@@ -1,5 +1,7 @@
 #include "CustomRunConfiguration.h"
 
+#include <projectexplorer/environmentaspect.h>
+
 using namespace ProjectExplorer;
 
 QtcGtest::Internal::CustomRunConfiguration::CustomRunConfiguration(LocalApplicationRunConfiguration *source) :
@@ -10,6 +12,10 @@ QtcGtest::Internal::CustomRunConfiguration::CustomRunConfiguration(LocalApplicat
   runMode_ = source->runMode ();
   workingDirectory_ = source->workingDirectory ();
   commandLineArguments_ = source->commandLineArguments ();
+  EnvironmentAspect *aspect = source->extraAspect<EnvironmentAspect>();
+  if (aspect != NULL) {
+    environment_ = aspect->environment ();
+  }
 }
 
 QWidget *QtcGtest::Internal::CustomRunConfiguration::createConfigurationWidget()
@@ -35,6 +41,10 @@ QString QtcGtest::Internal::CustomRunConfiguration::workingDirectory() const
 QString QtcGtest::Internal::CustomRunConfiguration::commandLineArguments() const
 {
   return commandLineArguments_;
+}
+void QtcGtest::Internal::CustomRunConfiguration::addToBaseEnvironment(Utils::Environment &env) const
+{
+  env = environment_;
 }
 
 void QtcGtest::Internal::CustomRunConfiguration::setArguments(const QString &arguments)

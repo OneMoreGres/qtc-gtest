@@ -1,5 +1,6 @@
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QDir>
 
 #include "OutputParser.h"
 #include "ParseState.h"
@@ -132,7 +133,13 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
     QFileInfo info (file);
     if (info.isRelative ())
     {
-      file = state.projectPath + QLatin1Char ('/') + match.captured (FailDetailFileName);
+      QString failedFileName = match.captured (FailDetailFileName);
+      file = state.projectPath + QLatin1Char ('/') + failedFileName;
+       // subdirs project workaround
+        while (!QFileInfo::exists (file) && failedFileName.startsWith (QLatin1String(".."))) {
+          int firstSeparator = failedFileName.indexOf (QDir::separator ());
+          file = state.projectPath + QLatin1Char ('/') + failedFileName.mid (firstSeparator + 1);
+        }
     }
     int lineNumber = match.captured (FailDetailLine).toInt ();
     model.addTestError (state.currentTest, state.currentCase, line, file, lineNumber);

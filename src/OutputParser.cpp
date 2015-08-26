@@ -138,7 +138,8 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
        // subdirs project workaround
         while (!QFileInfo::exists (file) && failedFileName.startsWith (QLatin1String(".."))) {
           int firstSeparator = failedFileName.indexOf (QDir::separator ());
-          file = state.projectPath + QLatin1Char ('/') + failedFileName.mid (firstSeparator + 1);
+          failedFileName = failedFileName.mid (firstSeparator + 1);
+          file = state.projectPath + QLatin1Char ('/') + failedFileName;
         }
     }
     int lineNumber = match.captured (FailDetailLine).toInt ();

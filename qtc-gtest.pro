@@ -1,6 +1,6 @@
 DEFINES += QTCGTEST_LIBRARY
 
-VERSION_SUFFIX = ""
+VERSION_SUFFIX = "_1"
 
 include(paths.pri)
 

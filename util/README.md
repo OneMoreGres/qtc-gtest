@@ -1,4 +1,6 @@
 # Changelog
+## v 3.6.0
+- QTC version update
 ## v 3.5.0_1
 - Fixed possible freeze.
 ## v 3.5.0

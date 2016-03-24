@@ -16,7 +16,7 @@ namespace ProjectExplorer
 namespace QtcGtest {
   namespace Internal {
 
-    class CustomRunConfiguration;
+    using ProjectExplorer::RunConfiguration;
 
     class TestProject : public QObject
     {
@@ -36,11 +36,11 @@ namespace QtcGtest {
 
       private:
         Utils::FileNameList getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const;
-        void runTestsForFiles (const Utils::FileNameList &files, CustomRunConfiguration* configuration) const;
-        CustomRunConfiguration *parse(ProjectExplorer::Project *project);
+        void runTestsForFiles (const Utils::FileNameList &files, RunConfiguration* configuration) const;
+        RunConfiguration *parse(ProjectExplorer::Project *project);
         Utils::FileNameList gtestMainIncludes() const;
         void preprocessDependencyTable ();
-        void runTests (CustomRunConfiguration *configuration) const;
+        void runTests (RunConfiguration *configuration) const;
         QStringList getTestCases (const QSet<Utils::FileName> &fileNames) const;
         Utils::FileNameList getDependentFiles(const Utils::FileNameList &files) const;
 

@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QFormLayout>
 
 #include <cpptools/cppmodelmanager.h>
 #include <cpptools/searchsymbols.h>
@@ -9,11 +10,12 @@
 #include <projectexplorer/session.h>
 #include <projectexplorer/projectexplorer.h>
 #include <projectexplorer/target.h>
+#include <projectexplorer/runconfigurationaspects.h>
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/idocument.h>
+#include <extensionsystem/pluginmanager.h>
 
 #include "TestProject.h"
-#include "CustomRunConfiguration.h"
 
 using namespace QtcGtest::Internal;
 
@@ -39,6 +41,12 @@ namespace
     FileName newName = FileName::fromString (f.absolutePath () + QLatin1Char ('/') + f.baseName ());
     return newName;
   }
+
+  template <class T>
+  void removeDuplicates (T &list) {
+    auto last = std::unique(list.begin(), list.end());
+    list.erase(last, list.end());
+  }
 }
 
 TestProject::TestProject(QObject *parent) :
@@ -54,14 +62,14 @@ TestProject::TestProject(QObject *parent) :
 void TestProject::checkProject()
 {
   Project* project = SessionManager::startupProject ();
-  CustomRunConfiguration* configuration = parse (project);
+  RunConfiguration* configuration = parse (project);
   if (configuration != NULL)
   {
     runTests (configuration);
   }
 }
 
-void TestProject::runTests(CustomRunConfiguration *configuration) const
+void TestProject::runTests(RunConfiguration *configuration) const
 {
   Q_ASSERT (configuration != NULL);
   ProjectExplorerPlugin* plugin = ProjectExplorerPlugin::instance ();
@@ -76,7 +84,7 @@ void TestProject::checkChanged()
     return;
   }
   Project* project = SessionManager::startupProject ();
-  CustomRunConfiguration* configuration = parse (project);
+  RunConfiguration* configuration = parse (project);
   if (configuration != NULL)
   {
     runTestsForFiles (changedFiles_, configuration);
@@ -87,7 +95,7 @@ void TestProject::checkChanged()
 void TestProject::checkCurrent()
 {
   Project* project = SessionManager::startupProject ();
-  CustomRunConfiguration* configuration = parse (project);
+  RunConfiguration* configuration = parse (project);
   if (configuration == NULL)
   {
     return;
@@ -99,7 +107,7 @@ void TestProject::checkCurrent()
     return;
   }
   FileName file = document->filePath ();
-  QStringList files = project->files (Project::ExcludeGeneratedFiles);
+  QStringList files = project->files (Project::SourceFiles);
   if (!files.contains (file.toString ()))
   {
     return;
@@ -108,7 +116,7 @@ void TestProject::checkCurrent()
   runTestsForFiles (FileNameList () << file, configuration);
 }
 
-void TestProject::runTestsForFiles(const FileNameList &files, CustomRunConfiguration *configuration) const
+void TestProject::runTestsForFiles(const FileNameList &files, RunConfiguration *configuration) const
 {
   Q_ASSERT (configuration != NULL);
   Q_ASSERT (!gtestIncludeFiles_.isEmpty ());
@@ -126,7 +134,14 @@ void TestProject::runTestsForFiles(const FileNameList &files, CustomRunConfigura
     return;
   }
   QString arguments = gtestFilter.arg(testCases.join (gtestFilterSeparator));
-  configuration->setArguments (arguments);
+  ArgumentsAspect *aspect = configuration->extraAspect <ArgumentsAspect> ();
+  if (aspect != NULL) {
+    // hack to avoid segv inside aspect. not so terrible because this aspect is for 1 use only
+    QWidget fakeWidget;
+    QFormLayout fakeLayout;
+    aspect->addToMainConfigurationWidget (&fakeWidget, &fakeLayout);
+    aspect->setArguments (aspect->unexpandedArguments () + arguments);
+  }
   runTests (configuration);
 }
 
@@ -150,7 +165,7 @@ FileNameList TestProject::getDependentFiles(const FileNameList &files) const
       uncheckedFiles += newFiles;
     }
   }
-  dependentFiles.removeDuplicates ();
+  removeDuplicates (dependentFiles);
   return dependentFiles;
 }
 
@@ -216,7 +231,7 @@ FileNameList TestProject::getChangedFiles(int beginRow, int endRow, bool modifie
   return files;
 }
 
-CustomRunConfiguration *TestProject::parse(Project *project)
+RunConfiguration *TestProject::parse(Project *project)
 {
   if (project == NULL)
   {
@@ -246,14 +261,21 @@ CustomRunConfiguration *TestProject::parse(Project *project)
     return NULL;
   }
 
-  LocalApplicationRunConfiguration* configuration =
-      qobject_cast<LocalApplicationRunConfiguration*> (target->activeRunConfiguration ());
-  if (configuration == NULL)
-  {
-    return NULL;
+  RunConfiguration* configuration =
+      qobject_cast<RunConfiguration*> (target->activeRunConfiguration ());
+
+  Target* parent = qobject_cast<Target*>(configuration->parent ());
+  if (parent) {
+    IRunConfigurationFactory* factory =
+        ExtensionSystem::PluginManager::getObject<IRunConfigurationFactory>(
+          [configuration, parent](IRunConfigurationFactory *factory) {
+      return factory->canClone (parent, configuration);
+    });
+    if (factory) {
+      return factory->clone (parent, configuration);
+    }
   }
-  CustomRunConfiguration* config = new CustomRunConfiguration (configuration);
-  return config;
+  return NULL;
 }
 
 FileNameList TestProject::gtestMainIncludes() const
@@ -266,7 +288,7 @@ FileNameList TestProject::gtestMainIncludes() const
       gtestHeaders << file;
     }
   }
-  gtestHeaders.removeDuplicates();
+  removeDuplicates (gtestHeaders);
   return gtestHeaders;
 }
 

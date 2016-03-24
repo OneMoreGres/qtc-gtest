@@ -14,7 +14,6 @@ SOURCES += \
     src/OutputPane.cpp \
     src/ParseState.cpp \
     src/TestProject.cpp \
-    src/CustomRunConfiguration.cpp \
     src/AutoToolTipDelegate.cpp
 
 HEADERS += \
@@ -27,7 +26,6 @@ HEADERS += \
     src/OutputPane.h \
     src/ParseState.h \
     src/TestProject.h \
-    src/CustomRunConfiguration.h \
     src/AutoToolTipDelegate.h
 
 FORMS += \

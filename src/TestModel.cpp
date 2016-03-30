@@ -1,3 +1,5 @@
+#include <utils/qtcassert.h>
+
 #include "TestModel.h"
 
 using namespace QtcGtest::Internal;
@@ -27,7 +29,7 @@ TestModel::TestModel(QObject *parent) :
 
 QModelIndex TestModel::findItem(const QString &name, const QModelIndex &parent) const
 {
-  Q_ASSERT (!name.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return QModelIndex ());
   for (int i = 0, end = rowCount (parent); i < end; ++i)
   {
     QModelIndex item = index (i, ColumnName, parent);
@@ -41,16 +43,16 @@ QModelIndex TestModel::findItem(const QString &name, const QModelIndex &parent) 
 
 QModelIndex TestModel::caseIndex(const QString &name) const
 {
-  Q_ASSERT (!name.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return QModelIndex ());
   return findItem (name, QModelIndex ());
 }
 
 QModelIndex TestModel::testIndex(const QString &name,
                                   const QString &caseName) const
 {
-  Q_ASSERT (!name.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return QModelIndex ());
   QModelIndex caseIndex = this->caseIndex (caseName);
-  Q_ASSERT (caseIndex.isValid ());
+  QTC_ASSERT (caseIndex.isValid (), return QModelIndex ());
   return findItem (name, caseIndex);
 }
 
@@ -141,15 +143,15 @@ TestModel::Type TestModel::getCurrentRows(const QModelIndex &index, int &caseRow
   {
     testRow = index.row ();
     caseRow = index.parent ().row ();
-    Q_ASSERT (caseRow >= 0);
+    QTC_ASSERT (caseRow >= 0, return TypeUnknown);
   }
   else if (type == TypeDetail || type == TypeDetailError)
   {
     detailRow = index.row ();
     testRow = index.parent ().row ();
-    Q_ASSERT (testRow >= 0);
+    QTC_ASSERT (testRow >= 0, return TypeUnknown);
     caseRow = index.parent ().parent ().row ();
-    Q_ASSERT (caseRow >= 0);
+    QTC_ASSERT (caseRow >= 0, return TypeUnknown);
   }
   return type;
 }
@@ -183,7 +185,7 @@ QList<QStandardItem *> TestModel::createRow(const QString &name, Type type) cons
 void TestModel::setRowColor(const QModelIndex &index, const QColor &color)
 {
   int row = index.row ();
-  Q_ASSERT (index.isValid ());
+  QTC_ASSERT (index.isValid (), return);
   for (int i = 0; i < ColumnCount; ++i)
   {
     itemFromIndex (index.sibling (row, i))->setBackground (color);
@@ -208,7 +210,7 @@ void TestModel::clear()
 
 void TestModel::addNote(const QString &text)
 {
-  Q_ASSERT (!text.isEmpty ());
+  QTC_ASSERT (!text.isEmpty (), return);
   QList<QStandardItem*> row = createRow (text, TypeNote);
   row.at(ColumnFailed)->setText (QLatin1String ("-1"));
   invisibleRootItem ()->appendRow (row);
@@ -218,38 +220,38 @@ void TestModel::addNote(const QString &text)
 
 void TestModel::addCase(const QString &name)
 {
-  Q_ASSERT (!name.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
   invisibleRootItem ()->appendRow (createRow (name, TypeCase));
 }
 
 void TestModel::addTest(const QString &name, const QString &caseName)
 {
-  Q_ASSERT (!name.isEmpty ());
-  Q_ASSERT (!caseName.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
+  QTC_ASSERT (!caseName.isEmpty (), return);
   QModelIndex caseIndex = this->caseIndex (caseName);
-  Q_ASSERT (caseIndex.isValid ());
+  QTC_ASSERT (caseIndex.isValid (), return);
   itemFromIndex (caseIndex)->appendRow (createRow (name, TypeTest));
 }
 
 void TestModel::addTestDetail(const QString &name, const QString &caseName,
                                const QString &detail)
 {
-  Q_ASSERT (!name.isEmpty ());
-  Q_ASSERT (!caseName.isEmpty ());
-  Q_ASSERT (!detail.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
+  QTC_ASSERT (!caseName.isEmpty (), return);
+  QTC_ASSERT (!detail.isEmpty (), return);
   QModelIndex testIndex = this->testIndex (name, caseName);
-  Q_ASSERT (testIndex.isValid ());
+  QTC_ASSERT (testIndex.isValid (), return);
   itemFromIndex (testIndex)->appendRow (createRow (detail, TypeDetail));
 }
 
 void TestModel::addTestError(const QString &name, const QString &caseName, const QString &detail, const QString &file, int line)
 {
-  Q_ASSERT (!name.isEmpty ());
-  Q_ASSERT (!caseName.isEmpty ());
-  Q_ASSERT (!detail.isEmpty ());
-  Q_ASSERT (!file.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
+  QTC_ASSERT (!caseName.isEmpty (), return);
+  QTC_ASSERT (!detail.isEmpty (), return);
+  QTC_ASSERT (!file.isEmpty (), return);
   QModelIndex testIndex = this->testIndex (name, caseName);
-  Q_ASSERT (testIndex.isValid ());
+  QTC_ASSERT (testIndex.isValid (), return);
   QList<QStandardItem*> row = createRow (detail, TypeDetailError);
   row.at (ColumnFile)->setText (file);
   row.at (ColumnLine)->setText (QString::number (line));
@@ -260,10 +262,10 @@ void TestModel::addTestError(const QString &name, const QString &caseName, const
 void TestModel::updateTest(const QString &name, const QString &caseName,
                             bool isOk, int time)
 {
-  Q_ASSERT (!name.isEmpty ());
-  Q_ASSERT (!caseName.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
+  QTC_ASSERT (!caseName.isEmpty (), return);
   QModelIndex testIndex = this->testIndex (name, caseName);
-  Q_ASSERT (testIndex.isValid ());
+  QTC_ASSERT (testIndex.isValid (), return);
   int row = testIndex.row ();
   setData (testIndex.sibling (row, ColumnPassed), isOk ? 1 : 0);
   setData (testIndex.sibling (row, ColumnFailed), isOk ? 0 : 1);
@@ -286,9 +288,9 @@ void TestModel::updateTest(const QString &name, const QString &caseName,
 void TestModel::updateCase(const QString &name, int passedCount,
                             int failedCount, int time)
 {
-  Q_ASSERT (!name.isEmpty ());
+  QTC_ASSERT (!name.isEmpty (), return);
   QModelIndex caseIndex = this->caseIndex (name);
-  Q_ASSERT (caseIndex.isValid ());
+  QTC_ASSERT (caseIndex.isValid (), return);
   int row = caseIndex.row ();
   setData (caseIndex.sibling (row, ColumnPassed), passedCount);
   setData (caseIndex.sibling (row, ColumnFailed), failedCount);
@@ -299,10 +301,10 @@ void TestModel::updateCase(const QString &name, int passedCount,
 void TestModel::renameTest(const QString &oldName, const QString &newName,
                            const QString &caseName)
 {
-  Q_ASSERT (!oldName.isEmpty ());
-  Q_ASSERT (!caseName.isEmpty ());
+  QTC_ASSERT (!oldName.isEmpty (), return);
+  QTC_ASSERT (!caseName.isEmpty (), return);
   QModelIndex testIndex = this->testIndex (oldName, caseName);
-  Q_ASSERT (testIndex.isValid ());
-  Q_ASSERT (!newName.isEmpty ());
+  QTC_ASSERT (testIndex.isValid (), return);
+  QTC_ASSERT (!newName.isEmpty (), return);
   setData (testIndex, newName);
 }

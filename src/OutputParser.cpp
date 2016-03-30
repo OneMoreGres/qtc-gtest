@@ -2,6 +2,8 @@
 #include <QRegularExpression>
 #include <QDir>
 
+#include <utils/qtcassert.h>
+
 #include "OutputParser.h"
 #include "ParseState.h"
 #include "TestModel.h"
@@ -128,7 +130,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = failDetailPattern.match (line);
   if (match.hasMatch ())
   {
-    Q_ASSERT (!state.projectPath.isEmpty ());
+    QTC_ASSERT (!state.projectPath.isEmpty (), return);
     QString file = match.captured (FailDetailFileName);
     QFileInfo info (file);
     if (info.isRelative ())
@@ -170,7 +172,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
 
   if (!state.currentTest.isEmpty ())
   {
-    Q_ASSERT (!state.currentCase.isEmpty ());
+    QTC_ASSERT (!state.currentCase.isEmpty (), return);
     model.addTestDetail (state.currentTest, state.currentCase, line);
   }
 }

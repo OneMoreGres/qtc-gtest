@@ -130,20 +130,26 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = failDetailPattern.match (line);
   if (match.hasMatch ())
   {
-    QTC_ASSERT (!state.projectPath.isEmpty (), return);
     QString file = match.captured (FailDetailFileName);
     QFileInfo info (file);
-    if (info.isRelative ())
+    if (info.exists ())
     {
-      QString failedFileName = match.captured (FailDetailFileName);
-      file = state.projectPath + QLatin1Char ('/') + failedFileName;
-       // subdirs project workaround
-        while (!QFileInfo::exists (file) && failedFileName.startsWith (QLatin1String(".."))) {
-          int firstSeparator = failedFileName.indexOf (QDir::separator ());
-          failedFileName = failedFileName.mid (firstSeparator + 1);
-          file = state.projectPath + QLatin1Char ('/') + failedFileName;
-        }
+      file = info.absoluteFilePath ();
     }
+    else
+    {
+      const QString dirUp (QStringLiteral("../"));
+      QString searchName = file.contains (dirUp) ? file.mid (file.lastIndexOf (dirUp) + 2) : file;
+      for (const auto& projectFile: state.projectFiles)
+      {
+        if (projectFile.endsWith (searchName))
+        {
+          file = projectFile;
+          break;
+        }
+      }
+    }
+
     int lineNumber = match.captured (FailDetailLine).toInt ();
     model.addTestError (state.currentTest, state.currentCase, line, file, lineNumber);
     return;

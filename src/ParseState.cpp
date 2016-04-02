@@ -10,6 +10,7 @@ ParseState::ParseState()
 void ParseState::reset()
 {
   isGoogleTestRun = false;
-  projectPath = currentCase = currentTest = QString ();
+  currentCase = currentTest = QString ();
   passedCount = passedTotalCount = failedCount = failedTotalCount = totalTime = disabledCount = 0;
+  projectFiles.clear ();
 }

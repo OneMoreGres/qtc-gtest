@@ -4,6 +4,7 @@
 #include <projectexplorer/runconfiguration.h>
 #include <projectexplorer/target.h>
 #include <projectexplorer/buildconfiguration.h>
+#include <projectexplorer/project.h>
 
 #include "OutputPane.h"
 #include "OutputParser.h"
@@ -197,8 +198,7 @@ void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
   model_->clear ();
   totalsLabel_->clear ();
   disabledLabel_->clear ();
-  state_->projectPath = control->runConfiguration ()->target ()->
-                        activeBuildConfiguration ()->buildDirectory ().toString ();
+  state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
   connect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
            this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
 

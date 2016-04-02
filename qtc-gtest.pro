@@ -14,7 +14,8 @@ SOURCES += \
     src/OutputPane.cpp \
     src/ParseState.cpp \
     src/TestProject.cpp \
-    src/AutoToolTipDelegate.cpp
+    src/AutoToolTipDelegate.cpp \
+    src/TestMark.cpp
 
 HEADERS += \
     src/Constants.h \
@@ -26,7 +27,8 @@ HEADERS += \
     src/OutputPane.h \
     src/ParseState.h \
     src/TestProject.h \
-    src/AutoToolTipDelegate.h
+    src/AutoToolTipDelegate.h \
+    src/TestMark.h
 
 FORMS += \
     src/PaneWidget.ui

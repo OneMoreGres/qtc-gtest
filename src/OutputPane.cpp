@@ -10,6 +10,7 @@
 #include "PaneWidget.h"
 #include "TestModel.h"
 #include "ParseState.h"
+#include "TestMark.h"
 
 using namespace QtcGtest::Internal;
 
@@ -35,6 +36,8 @@ OutputPane::OutputPane(QObject *parent) :
   togglePassedButton_->setChecked (true);
   togglePassedButton_->setToolTip (tr ("Show passed tests"));
   togglePassedButton_->setIcon(QIcon(QLatin1String(":/images/passed.ico")));
+
+  connect (model_.data (), &TestModel::newError, this, &OutputPane::addMark);
 }
 
 OutputPane::~OutputPane()
@@ -77,6 +80,8 @@ int OutputPane::priorityInStatusBar() const
 
 void OutputPane::clearContents()
 {
+  qDeleteAll (marks);
+  marks.clear ();
   model_->clear ();
   totalsLabel_->clear ();
   disabledLabel_->clear ();
@@ -141,6 +146,11 @@ void OutputPane::goToPrev()
   showError (model_->previousError (currentIndex));
 }
 
+void OutputPane::setCurrentIndex(const QModelIndex &index)
+{
+  widget_->setCurrentIndex (widget_->proxyIndex(index));
+}
+
 void OutputPane::showError(const QModelIndex &errorIndex)
 {
   if (!errorIndex.isValid ())
@@ -171,6 +181,14 @@ void OutputPane::handleViewClicked(const QModelIndex &index)
       showError (model_->previousError (sourceIndex));
     }
   }
+}
+
+void OutputPane::addMark(const QModelIndex &index)
+{
+  auto row = index.row ();
+  auto file = index.sibling (row, TestModel::ColumnFile).data ().toString ();
+  auto line = index.sibling (row, TestModel::ColumnLine).data ().toInt ();
+  marks << new TestMark (QPersistentModelIndex(index), file, line, *this);
 }
 
 void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)

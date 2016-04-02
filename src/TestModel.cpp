@@ -257,6 +257,8 @@ void TestModel::addTestError(const QString &name, const QString &caseName, const
   row.at (ColumnLine)->setText (QString::number (line));
   itemFromIndex (testIndex)->appendRow (row);
   ++errorCount_;
+
+  emit newError (indexFromItem (row.first ()));
 }
 
 void TestModel::updateTest(const QString &name, const QString &caseName,

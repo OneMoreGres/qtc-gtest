@@ -57,6 +57,9 @@ namespace QtcGtest {
 
         void renameTest (const QString& oldName, const QString& newName, const QString& caseName);
 
+      signals:
+        void newError (const QModelIndex &index);
+
       private:
         QList<QStandardItem*> createRow (const QString& name, Type type) const;
         void setRowColor (const QModelIndex& index, const QColor& color);

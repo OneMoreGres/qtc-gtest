@@ -8,6 +8,7 @@ namespace QtcGtest {
     const char ACTION_CHECK_PROJECT_ID[] = "QtcGtest.CheckActiveProject";
     const char ACTION_CHECK_CURRENT_ID[] = "QtcGtest.CheckCurrent";
     const char ACTION_CHECK_CHANGED_ID[] = "QtcGtest.CheckChanged";
+    const char TEST_MARK_ID[] = "QtcGtest.TestMark";
 
   } // namespace QtcGtest
 } // namespace Constants

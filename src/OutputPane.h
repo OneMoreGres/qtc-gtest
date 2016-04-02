@@ -20,6 +20,7 @@ namespace QtcGtest {
     class OutputParser;
     class TestModel;
     class ParseState;
+    class TestMark;
 
     /*!
    * \brief Output pane for google test control.
@@ -47,6 +48,7 @@ namespace QtcGtest {
         bool canPrevious() const;
         void goToNext();
         void goToPrev();
+        void setCurrentIndex (const QModelIndex& index);
 
       public slots:
         void handleRunStart (ProjectExplorer::RunControl* control);
@@ -56,6 +58,7 @@ namespace QtcGtest {
         void parseMessage (ProjectExplorer::RunControl *control,
                            const QString &msg, Utils::OutputFormat format);
         void handleViewClicked (const QModelIndex &index);
+        void addMark (const QModelIndex& index);
 
       private:
         void showError (const QModelIndex& errorIndex);
@@ -64,6 +67,7 @@ namespace QtcGtest {
         OutputParser* parser_;
         QSharedPointer<TestModel> model_;
         ParseState* state_;
+        QList<TestMark*> marks;
 
         // output widget
         QPointer<PaneWidget> widget_;

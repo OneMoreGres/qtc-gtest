@@ -198,7 +198,9 @@ void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
   model_->clear ();
   totalsLabel_->clear ();
   disabledLabel_->clear ();
-  state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
+  if (control && control->project ()) {
+    state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
+  }
   connect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
            this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
 

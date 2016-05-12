@@ -1,4 +1,11 @@
 # Changelog
+
+## v 4.0.0
+* Updated failed file finding algorithm.
+* Added marks.
+* Some Q_ASSERTs changed to QTC_ASSERTs.
+
+
 ## v 3.6.0
 - QTC version update
 ## v 3.5.0_1

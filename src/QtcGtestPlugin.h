@@ -5,6 +5,8 @@
 
 #include <extensionsystem/iplugin.h>
 
+#include <QAction>
+
 namespace QtcGtest {
   namespace Internal {
 
@@ -32,6 +34,9 @@ namespace QtcGtest {
 
       private:
         TestProject* testProject_;
+        QAction *checkProjectAction;
+        QAction *checkCurrentAction;
+        QAction *checkChangedAction;
     };
 
   } // namespace Internal

@@ -49,6 +49,8 @@ namespace QtcGtest {
         void goToNext();
         void goToPrev();
         void setCurrentIndex (const QModelIndex& index);
+      public:
+        void setCheckActions(QAction *checkProject, QAction *checkCurrent, QAction *checkChanged);
 
       public slots:
         void handleRunStart (ProjectExplorer::RunControl* control);
@@ -77,6 +79,9 @@ namespace QtcGtest {
         QLabel* disabledLabel_;
         QToolButton* togglePopupButton_;
         QToolButton* togglePassedButton_;
+        QToolButton* cmdCheckProject_;
+        QToolButton* cmdCheckCurrent_;
+        QToolButton* cmdCheckChanged_;
     };
 
   } // namespace Internal

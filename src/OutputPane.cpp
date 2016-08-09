@@ -263,6 +263,7 @@ void OutputPane::parseMessage(ProjectExplorer::RunControl *control, const QStrin
       if (!state_->isGoogleTestRun) {
         continue;
       }
+      clearContents ();
     }
     parser_->parseMessage (line, *model_, *state_);
   }

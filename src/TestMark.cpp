@@ -24,6 +24,7 @@ namespace QtcGtest {
 
     void TestMark::clicked()
     {
+      pane_.popup (OutputPane::NoModeSwitch);
       pane_.setCurrentIndex (index_);
     }
   }

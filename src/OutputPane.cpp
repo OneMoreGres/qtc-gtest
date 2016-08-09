@@ -24,7 +24,10 @@ OutputPane::OutputPane(QObject *parent) :
   totalsLabel_ (new QLabel),
   disabledLabel_ (new QLabel),
   togglePopupButton_ (new QToolButton),
-  togglePassedButton_ (new QToolButton)
+  togglePassedButton_ (new QToolButton),
+  cmdCheckProject_(new QToolButton),
+  cmdCheckCurrent_(new QToolButton),
+  cmdCheckChanged_(new QToolButton)
 {
   totalsLabel_->setMargin(5);
 
@@ -65,7 +68,13 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
 QList<QWidget *> OutputPane::toolBarWidgets() const
 {
   QList<QWidget*> widgets;
-  widgets << togglePopupButton_ << togglePassedButton_ << totalsLabel_ << disabledLabel_;
+  widgets << cmdCheckProject_
+          << cmdCheckCurrent_
+          << cmdCheckChanged_
+          << togglePopupButton_
+          << togglePassedButton_
+          << totalsLabel_
+          << disabledLabel_;
   return widgets;
 }
 
@@ -150,6 +159,13 @@ void OutputPane::goToPrev()
 void OutputPane::setCurrentIndex(const QModelIndex &index)
 {
   widget_->setCurrentIndex (widget_->proxyIndex(index));
+}
+
+void OutputPane::setCheckActions(QAction *checkProject, QAction *checkCurrent, QAction *checkChanged)
+{
+    cmdCheckProject_->setDefaultAction(checkProject);
+    cmdCheckCurrent_->setDefaultAction(checkCurrent);
+    cmdCheckChanged_->setDefaultAction(checkChanged);
 }
 
 void OutputPane::showError(const QModelIndex &errorIndex)

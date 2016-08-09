@@ -53,6 +53,7 @@ bool QtcGtestPlugin::initialize(const QStringList &arguments, QString *errorStri
   initMenus ();
 
   OutputPane* pane = new OutputPane;
+  pane->setCheckActions(checkProjectAction, checkCurrentAction, checkChangedAction);
   connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlStarted(ProjectExplorer::RunControl *)),
            pane, SLOT (handleRunStart(ProjectExplorer::RunControl *)));
   connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlFinished(ProjectExplorer::RunControl *)),
@@ -94,21 +95,21 @@ void QtcGtestPlugin::initLanguage()
 
 void QtcGtestPlugin::initMenus()
 {
-  QAction *checkProjectAction = new QAction(tr("Check project"), this);
+  checkProjectAction = new QAction(tr("Check project"), this);
   Core::Command *checkProjectCmd = ActionManager::registerAction(
                                      checkProjectAction, Constants::ACTION_CHECK_PROJECT_ID,
                                      Context(Core::Constants::C_GLOBAL));
   checkProjectCmd->setDefaultKeySequence (QKeySequence (tr ("Ctrl+Alt+T,A")));
   connect(checkProjectAction, SIGNAL(triggered()), testProject_, SLOT(checkProject()));
 
-  QAction *checkCurrentAction = new QAction(tr("Check current"), this);
+  checkCurrentAction = new QAction(tr("Check current"), this);
   Core::Command *checkCurrentCmd = ActionManager::registerAction(
                                      checkCurrentAction, Constants::ACTION_CHECK_CURRENT_ID,
                                      Context(Core::Constants::C_GLOBAL));
   checkCurrentCmd->setDefaultKeySequence (QKeySequence (tr ("Ctrl+Alt+T,C")));
   connect(checkCurrentAction, SIGNAL(triggered()), testProject_, SLOT(checkCurrent()));
 
-  QAction *checkChangedAction = new QAction(tr("Check changed"), this);
+  checkChangedAction = new QAction(tr("Check changed"), this);
   Core::Command *checkChangedCmd = ActionManager::registerAction(
                                      checkChangedAction, Constants::ACTION_CHECK_CHANGED_ID,
                                      Context(Core::Constants::C_GLOBAL));

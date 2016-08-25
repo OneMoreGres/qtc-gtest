@@ -217,7 +217,7 @@ void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
   if (control && control->project ()) {
     state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
   }
-  connect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
+  connect (control, SIGNAL (appendMessageRequested(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
            this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
 
 }
@@ -237,7 +237,7 @@ void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
       popup (WithFocus);
     }
   }
-  disconnect (control, SIGNAL (appendMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
+  disconnect (control, SIGNAL (appendMessageRequested(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
               this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
 
 }

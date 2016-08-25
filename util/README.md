@@ -1,5 +1,11 @@
 # Changelog
 
+## v 4.1.0
+* Correctly clear marks.
+* Check buttons added to pane.
+* Popup pane when click on mark.
+
+
 ## v 4.0.0
 * Updated failed file finding algorithm.
 * Added marks.

@@ -1,4 +1,4 @@
-#include <coreplugin/coreicons.h>
+#include <utils/utilsicons.h>
 
 #include "TestMark.h"
 #include "Constants.h"
@@ -13,7 +13,7 @@ namespace QtcGtest {
         index_ (index), pane_(pane)
     {
       setVisible (true);
-      setIcon(Core::Icons::ERROR.icon());
+      setIcon(Utils::Icons::ERROR.icon());
       setPriority(TextEditor::TextMark::LowPriority);
     }
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## v 4.2.0
+- QTC version update
+
 ## v 4.1.0
 * Correctly clear marks.
 * Check buttons added to pane.

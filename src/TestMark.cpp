@@ -13,7 +13,7 @@ namespace QtcGtest {
         index_ (index), pane_(pane)
     {
       setVisible (true);
-      setIcon(Utils::Icons::ERROR.icon());
+      setIcon(Utils::Icons::CRITICAL.icon());
       setPriority(TextEditor::TextMark::LowPriority);
     }
 

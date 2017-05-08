@@ -97,7 +97,7 @@ void OutputPane::clearContents()
   disabledLabel_->clear ();
 }
 
-void OutputPane::visibilityChanged(bool visible)
+void OutputPane::visibilityChanged(bool /*visible*/)
 {
 }
 

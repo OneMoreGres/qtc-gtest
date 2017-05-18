@@ -15,7 +15,6 @@
 
 #include "QtcGtestPlugin.h"
 #include "Constants.h"
-#include "Settings.h"
 #include "OutputPane.h"
 #include "TestProject.h"
 

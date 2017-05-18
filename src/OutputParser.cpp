@@ -130,7 +130,7 @@ void OutputParser::parseMessage(const QString &line, TestModel &model, ParseStat
   match = failDetailPattern.match (line);
   if (match.hasMatch ())
   {
-    QString file = match.captured (FailDetailFileName);
+    QString file = QDir::fromNativeSeparators (match.captured (FailDetailFileName));
     QFileInfo info (file);
     if (info.exists ())
     {

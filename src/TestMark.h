@@ -10,18 +10,17 @@ namespace QtcGtest {
 
     class OutputPane;
 
-    class TestMark : public TextEditor::TextMark
-    {
+    class TestMark : public TextEditor::TextMark {
       public:
-        TestMark(QPersistentModelIndex index, const QString &fileName, int lineNumber,
-                 OutputPane& pane);
+        TestMark (QPersistentModelIndex index, const QString &fileName, int lineNumber,
+                  OutputPane &pane);
 
-        bool isClickable() const override;
-        void clicked() override;
+        bool isClickable () const override;
+        void clicked () override;
 
       private:
         QPersistentModelIndex index_;
-        OutputPane& pane_;
+        OutputPane &pane_;
     };
 
   }

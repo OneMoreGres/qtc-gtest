@@ -2,13 +2,11 @@
 
 using namespace QtcGtest::Internal;
 
-ParseState::ParseState()
-{
+ParseState::ParseState () {
   reset ();
 }
 
-void ParseState::reset()
-{
+void ParseState::reset () {
   isGoogleTestRun = false;
   currentCase = currentTest = QString ();
   passedCount = passedTotalCount = failedCount = failedTotalCount = totalTime = disabledCount = 0;

@@ -6,15 +6,15 @@
 namespace QtcGtest {
   namespace Internal {
 
-    class AutoToolTipDelegate : public QStyledItemDelegate
-    {
-        Q_OBJECT
+    class AutoToolTipDelegate : public QStyledItemDelegate {
+      Q_OBJECT
+
       public:
-        AutoToolTipDelegate (QObject* parent);
+        AutoToolTipDelegate (QObject *parent);
 
       public slots:
-        bool helpEvent (QHelpEvent* event, QAbstractItemView* view,
-                        const QStyleOptionViewItem& option, const QModelIndex& index);
+        bool helpEvent (QHelpEvent *event, QAbstractItemView *view,
+                        const QStyleOptionViewItem &option, const QModelIndex &index);
     };
 
   } // namespace Internal

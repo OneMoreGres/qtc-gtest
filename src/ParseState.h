@@ -6,25 +6,24 @@
 namespace QtcGtest {
   namespace Internal {
 
-  class ParseState
-  {
-    public:
-      ParseState ();
-      void reset ();
+    class ParseState {
+      public:
+        ParseState ();
+        void reset ();
 
-      bool isGoogleTestRun;
-      QStringList projectFiles;
-      QString currentCase;
-      QString currentTest;
-      int passedCount;
-      int failedCount;
-      int passedTotalCount;
-      int failedTotalCount;
-      int totalTime;
-      int disabledCount;
-  };
+        bool isGoogleTestRun;
+        QStringList projectFiles;
+        QString currentCase;
+        QString currentTest;
+        int passedCount;
+        int failedCount;
+        int passedTotalCount;
+        int failedTotalCount;
+        int totalTime;
+        int disabledCount;
+    };
 
-} // namespace Internal
+  } // namespace Internal
 } // namespace QtcGtest
 
 

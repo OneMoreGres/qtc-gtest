@@ -7,23 +7,20 @@
 namespace QtcGtest {
   namespace Internal {
 
-    TestMark::TestMark(QPersistentModelIndex index, const QString &fileName, int lineNumber,
-                       OutputPane &pane)
+    TestMark::TestMark (QPersistentModelIndex index, const QString &fileName, int lineNumber,
+                        OutputPane &pane)
       : TextEditor::TextMark (fileName, lineNumber, Core::Id (Constants::TEST_MARK_ID)),
-        index_ (index), pane_(pane)
-    {
+      index_ (index), pane_ (pane) {
       setVisible (true);
-      setIcon(Utils::Icons::CRITICAL.icon());
-      setPriority(TextEditor::TextMark::LowPriority);
+      setIcon (Utils::Icons::CRITICAL.icon ());
+      setPriority (TextEditor::TextMark::LowPriority);
     }
 
-    bool TestMark::isClickable() const
-    {
+    bool TestMark::isClickable () const {
       return true;
     }
 
-    void TestMark::clicked()
-    {
+    void TestMark::clicked () {
       pane_.popup (OutputPane::NoModeSwitch);
       pane_.setCurrentIndex (index_);
     }

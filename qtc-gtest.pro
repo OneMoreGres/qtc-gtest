@@ -43,7 +43,8 @@ OTHER_FILES += \
     LICENSE.md \
     README.md \
     images/README.md \
-    util/README.md
+    util/README.md \
+    uncrustify.cfg
 
 PROVIDER = Gres
 

@@ -15,25 +15,24 @@ namespace QtcGtest {
     /*!
      * \brief main plugin class.
      */
-    class QtcGtestPlugin : public ExtensionSystem::IPlugin
-    {
-        Q_OBJECT
-        Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtcGtest.json")
+    class QtcGtestPlugin : public ExtensionSystem::IPlugin {
+      Q_OBJECT
+      Q_PLUGIN_METADATA (IID "org.qt-project.Qt.QtCreatorPlugin" FILE "QtcGtest.json")
 
       public:
-        QtcGtestPlugin();
-        ~QtcGtestPlugin();
+        QtcGtestPlugin ();
+        ~QtcGtestPlugin ();
 
-        bool initialize(const QStringList &arguments, QString *errorString);
-        void extensionsInitialized();
-        ShutdownFlag aboutToShutdown();
+        bool initialize (const QStringList &arguments, QString *errorString);
+        void extensionsInitialized ();
+        ShutdownFlag aboutToShutdown ();
 
       private:
         void initLanguage ();
         void initMenus ();
 
       private:
-        TestProject* testProject_;
+        TestProject *testProject_;
         QAction *checkProjectAction;
         QAction *checkCurrentAction;
         QAction *checkChangedAction;

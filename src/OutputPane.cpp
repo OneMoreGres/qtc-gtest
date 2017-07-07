@@ -15,8 +15,8 @@
 
 using namespace QtcGtest::Internal;
 
-OutputPane::OutputPane(QObject *parent) :
-  IOutputPane(parent),
+OutputPane::OutputPane (QObject *parent) :
+  IOutputPane (parent),
   parser_ (new OutputParser),
   model_ (new TestModel),
   state_ (new ParseState),
@@ -25,27 +25,25 @@ OutputPane::OutputPane(QObject *parent) :
   disabledLabel_ (new QLabel),
   togglePopupButton_ (new QToolButton),
   togglePassedButton_ (new QToolButton),
-  cmdCheckProject_(new QToolButton),
-  cmdCheckCurrent_(new QToolButton),
-  cmdCheckChanged_(new QToolButton)
-{
-  totalsLabel_->setMargin(5);
+  cmdCheckProject_ (new QToolButton),
+  cmdCheckCurrent_ (new QToolButton),
+  cmdCheckChanged_ (new QToolButton) {
+  totalsLabel_->setMargin (5);
 
   togglePopupButton_->setCheckable (true);
   togglePopupButton_->setChecked (true);
   togglePopupButton_->setToolTip (tr ("Auto popup pane"));
-  togglePopupButton_->setIcon(QIcon(QLatin1String(":/images/popup.ico")));
+  togglePopupButton_->setIcon (QIcon (QLatin1String (":/images/popup.ico")));
 
   togglePassedButton_->setCheckable (true);
   togglePassedButton_->setChecked (true);
   togglePassedButton_->setToolTip (tr ("Show passed tests"));
-  togglePassedButton_->setIcon(QIcon(QLatin1String(":/images/passed.ico")));
+  togglePassedButton_->setIcon (QIcon (QLatin1String (":/images/passed.ico")));
 
   connect (model_.data (), &TestModel::newError, this, &OutputPane::addMark);
 }
 
-OutputPane::~OutputPane()
-{
+OutputPane::~OutputPane () {
   delete togglePassedButton_;
   delete togglePopupButton_;
   delete disabledLabel_;
@@ -54,8 +52,7 @@ OutputPane::~OutputPane()
   delete state_;
 }
 
-QWidget *OutputPane::outputWidget(QWidget *parent)
-{
+QWidget *OutputPane::outputWidget (QWidget *parent) {
   Q_ASSERT (model_ != NULL);
   widget_ = new PaneWidget (model_, parent); // Can be only 1?
   connect (widget_.data (), SIGNAL (viewClicked (const QModelIndex&)),
@@ -65,9 +62,8 @@ QWidget *OutputPane::outputWidget(QWidget *parent)
   return widget_.data ();
 }
 
-QList<QWidget *> OutputPane::toolBarWidgets() const
-{
-  QList<QWidget*> widgets;
+QList<QWidget *> OutputPane::toolBarWidgets () const {
+  QList<QWidget *> widgets;
   widgets << cmdCheckProject_
           << cmdCheckCurrent_
           << cmdCheckChanged_
@@ -78,18 +74,15 @@ QList<QWidget *> OutputPane::toolBarWidgets() const
   return widgets;
 }
 
-QString OutputPane::displayName() const
-{
+QString OutputPane::displayName () const {
   return tr ("Google Test");
 }
 
-int OutputPane::priorityInStatusBar() const
-{
+int OutputPane::priorityInStatusBar () const {
   return 10;
 }
 
-void OutputPane::clearContents()
-{
+void OutputPane::clearContents () {
   qDeleteAll (marks);
   marks.clear ();
   model_->clear ();
@@ -97,119 +90,98 @@ void OutputPane::clearContents()
   disabledLabel_->clear ();
 }
 
-void OutputPane::visibilityChanged(bool /*visible*/)
-{
+void OutputPane::visibilityChanged (bool /*visible*/) {
 }
 
-void OutputPane::setFocus()
-{
-  if (!widget_.isNull ())
-  {
+void OutputPane::setFocus () {
+  if (!widget_.isNull ()) {
     widget_->setFocus ();
   }
 }
 
-bool OutputPane::hasFocus() const
-{
-  if (!widget_.isNull ())
-  {
+bool OutputPane::hasFocus () const {
+  if (!widget_.isNull ()) {
     return widget_->hasFocus ();
   }
   return false;
 }
 
-bool OutputPane::canFocus() const
-{
+bool OutputPane::canFocus () const {
   return (!widget_.isNull ());
 }
 
-bool OutputPane::canNavigate() const
-{
+bool OutputPane::canNavigate () const {
   return true;
 }
 
-bool OutputPane::canNext() const
-{
+bool OutputPane::canNext () const {
   Q_ASSERT (model_ != NULL);
   // Do not update value because Creator checks it BEFORE it can actually be updated.
   return (model_->errorCount () > 0);
 }
 
-bool OutputPane::canPrevious() const
-{
+bool OutputPane::canPrevious () const {
   Q_ASSERT (model_ != NULL);
   // Do not update value because Creator checks it BEFORE it can actually be updated.
   return (model_->errorCount () > 0);
 }
 
-void OutputPane::goToNext()
-{
+void OutputPane::goToNext () {
   Q_ASSERT (!widget_.isNull ());
   QModelIndex currentIndex = widget_->testModelIndex (widget_->currentIndex ());
   showError (model_->nextError (currentIndex));
 }
 
-void OutputPane::goToPrev()
-{
+void OutputPane::goToPrev () {
   Q_ASSERT (!widget_.isNull ());
   QModelIndex currentIndex = widget_->testModelIndex (widget_->currentIndex ());
   showError (model_->previousError (currentIndex));
 }
 
-void OutputPane::setCurrentIndex(const QModelIndex &index)
-{
-  widget_->setCurrentIndex (widget_->proxyIndex(index));
+void OutputPane::setCurrentIndex (const QModelIndex &index) {
+  widget_->setCurrentIndex (widget_->proxyIndex (index));
 }
 
-void OutputPane::setCheckActions(QAction *checkProject, QAction *checkCurrent, QAction *checkChanged)
-{
-    cmdCheckProject_->setDefaultAction(checkProject);
-    cmdCheckCurrent_->setDefaultAction(checkCurrent);
-    cmdCheckChanged_->setDefaultAction(checkChanged);
+void OutputPane::setCheckActions (QAction *checkProject, QAction *checkCurrent, QAction *checkChanged) {
+  cmdCheckProject_->setDefaultAction (checkProject);
+  cmdCheckCurrent_->setDefaultAction (checkCurrent);
+  cmdCheckChanged_->setDefaultAction (checkChanged);
 }
 
-void OutputPane::showError(const QModelIndex &errorIndex)
-{
-  if (!errorIndex.isValid ())
-  {
+void OutputPane::showError (const QModelIndex &errorIndex) {
+  if (!errorIndex.isValid ()) {
     return;
   }
-  widget_->setCurrentIndex (widget_->proxyIndex(errorIndex));
+  widget_->setCurrentIndex (widget_->proxyIndex (errorIndex));
   int row = errorIndex.row ();
   QString file = errorIndex.sibling (row, TestModel::ColumnFile).data ().toString ();
   int line = errorIndex.sibling (row, TestModel::ColumnLine).data ().toInt ();
   Core::EditorManager::openEditorAt (file, line);
 }
 
-void OutputPane::handleViewClicked(const QModelIndex &index)
-{
-  Q_ASSERT (index.isValid());
+void OutputPane::handleViewClicked (const QModelIndex &index) {
+  Q_ASSERT (index.isValid ());
   QModelIndex sourceIndex = widget_->testModelIndex (index);
   TestModel::Type type = model_->getType (sourceIndex);
-  if (type == TestModel::TypeDetailError)
-  {
+  if (type == TestModel::TypeDetailError) {
     showError (sourceIndex);
   }
-  else if (type == TestModel::TypeDetail)
-  {
+  else if (type == TestModel::TypeDetail) {
     QModelIndex previousError = model_->previousError (sourceIndex);
-    if (previousError.isValid () && previousError.parent ().row () == sourceIndex.parent ().row ())
-    {
+    if (previousError.isValid () && previousError.parent ().row () == sourceIndex.parent ().row ()) {
       showError (model_->previousError (sourceIndex));
     }
   }
 }
 
-void OutputPane::addMark(const QModelIndex &index)
-{
+void OutputPane::addMark (const QModelIndex &index) {
   auto row = index.row ();
   auto file = index.sibling (row, TestModel::ColumnFile).data ().toString ();
   auto line = index.sibling (row, TestModel::ColumnLine).data ().toInt ();
-  marks << new TestMark (QPersistentModelIndex(index), file, line, *this);
+  marks << new TestMark (QPersistentModelIndex (index), file, line, *this);
 }
 
-void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
-{
+void OutputPane::handleRunStart (ProjectExplorer::RunControl *control) {
   state_->reset ();
   model_->clear ();
   totalsLabel_->clear ();
@@ -217,48 +189,40 @@ void OutputPane::handleRunStart(ProjectExplorer::RunControl *control)
   if (control && control->project ()) {
     state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
   }
-  connect (control, SIGNAL (appendMessageRequested(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
-           this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
+  connect (control, SIGNAL (appendMessageRequested (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)),
+           this, SLOT (parseMessage (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)));
 
 }
 
-void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control)
-{
-  if (state_->isGoogleTestRun)
-  {
+void OutputPane::handleRunFinish (ProjectExplorer::RunControl *control) {
+  if (state_->isGoogleTestRun) {
     widget_->spanColumns ();
     totalsLabel_->setText (tr ("Total: passed %1 of %2 (%3 ms).").arg (
                              state_->passedTotalCount).arg (
                              state_->passedTotalCount +
                              state_->failedTotalCount).arg (state_->totalTime));
-    disabledLabel_->setText(tr ("Disabled tests: %1.").arg (state_->disabledCount));
-    if (togglePopupButton_->isChecked())
-    {
+    disabledLabel_->setText (tr ("Disabled tests: %1.").arg (state_->disabledCount));
+    if (togglePopupButton_->isChecked ()) {
       popup (WithFocus);
     }
   }
-  disconnect (control, SIGNAL (appendMessageRequested(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )),
-              this, SLOT (parseMessage(ProjectExplorer::RunControl *, const QString &, Utils::OutputFormat )));
+  disconnect (control, SIGNAL (appendMessageRequested (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)),
+              this, SLOT (parseMessage (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)));
 
 }
 
-void OutputPane::parseMessage(ProjectExplorer::RunControl *control, const QString &msg, Utils::OutputFormat format)
-{
+void OutputPane::parseMessage (ProjectExplorer::RunControl *control, const QString &msg, Utils::OutputFormat format) {
   Q_UNUSED (control);
-  if (!(format == Utils::StdOutFormat || format == Utils::StdOutFormatSameLine))
-  {
+  if (!(format == Utils::StdOutFormat || format == Utils::StdOutFormatSameLine)) {
     return;
   }
 
   QStringList lines = msg.split (QLatin1Char ('\n'));
-  foreach (const QString& line, lines)
-  {
-    if (line.trimmed ().isEmpty ())
-    {
+  foreach (const QString &line, lines) {
+    if (line.trimmed ().isEmpty ()) {
       continue;
     }
-    if (!state_->isGoogleTestRun)
-    {
+    if (!state_->isGoogleTestRun) {
       state_->isGoogleTestRun = parser_->isGoogleTestRun (line);
       if (!state_->isGoogleTestRun) {
         continue;

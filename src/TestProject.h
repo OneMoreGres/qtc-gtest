@@ -7,8 +7,7 @@
 
 #include <utils/fileutils.h>
 
-namespace ProjectExplorer
-{
+namespace ProjectExplorer {
   class Project;
   class RunConfiguration;
 }
@@ -18,11 +17,11 @@ namespace QtcGtest {
 
     using ProjectExplorer::RunConfiguration;
 
-    class TestProject : public QObject
-    {
-        Q_OBJECT
+    class TestProject : public QObject {
+      Q_OBJECT
+
       public:
-        explicit TestProject(QObject *parent = 0);
+        explicit TestProject (QObject *parent = 0);
 
       public slots:
 
@@ -35,14 +34,14 @@ namespace QtcGtest {
         void handleDocumentsClose (const QModelIndex &parent, int start, int end);
 
       private:
-        Utils::FileNameList getChangedFiles(int beginRow, int endRow, bool modifiedFlag) const;
-        void runTestsForFiles (const Utils::FileNameList &files, RunConfiguration* configuration) const;
-        RunConfiguration *parse(ProjectExplorer::Project *project);
-        Utils::FileNameList gtestMainIncludes() const;
+        Utils::FileNameList getChangedFiles (int beginRow, int endRow, bool modifiedFlag) const;
+        void runTestsForFiles (const Utils::FileNameList &files, RunConfiguration *configuration) const;
+        RunConfiguration *parse (ProjectExplorer::Project *project);
+        Utils::FileNameList gtestMainIncludes () const;
         void preprocessDependencyTable ();
         void runTests (RunConfiguration *configuration) const;
         QStringList getTestCases (const QSet<Utils::FileName> &fileNames) const;
-        Utils::FileNameList getDependentFiles(const Utils::FileNameList &files) const;
+        Utils::FileNameList getDependentFiles (const Utils::FileNameList &files) const;
 
       private:
         Utils::FileNameList changedFiles_;

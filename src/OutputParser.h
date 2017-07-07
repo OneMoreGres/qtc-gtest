@@ -9,15 +9,15 @@ namespace QtcGtest {
     class TestModel;
     class ParseState;
 
-    class OutputParser : public QObject
-    {
-        Q_OBJECT
+    class OutputParser : public QObject {
+      Q_OBJECT
+
       public:
-        explicit OutputParser(QObject *parent = 0);
+        explicit OutputParser (QObject *parent = 0);
 
-        bool isGoogleTestRun (const QString& line) const;
+        bool isGoogleTestRun (const QString &line) const;
 
-        void parseMessage (const QString& line, TestModel& model, ParseState& state);
+        void parseMessage (const QString &line, TestModel &model, ParseState &state);
     };
 
   } // namespace Internal

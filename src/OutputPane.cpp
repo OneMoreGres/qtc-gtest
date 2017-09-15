@@ -189,6 +189,9 @@ void OutputPane::handleRunStart (ProjectExplorer::RunControl *control) {
   if (control && control->project ()) {
     state_->projectFiles = control->project ()->files (ProjectExplorer::Project::SourceFiles);
   }
+  connect (control, &ProjectExplorer::RunControl::finished,
+           this, [control, this] {handleRunFinish (control);});
+
   connect (control, SIGNAL (appendMessageRequested (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)),
            this, SLOT (parseMessage (ProjectExplorer::RunControl *,const QString&,Utils::OutputFormat)));
 

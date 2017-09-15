@@ -64,11 +64,24 @@ void TestProject::checkProject () {
   }
 }
 
-void TestProject::runTests (RunConfiguration *configuration) const {
+void TestProject::runTests (RunConfiguration *configuration) {
   Q_ASSERT (configuration != NULL);
   ProjectExplorerPlugin *plugin = ProjectExplorerPlugin::instance ();
-  plugin->runRunConfiguration (configuration, ProjectExplorer::Constants::NORMAL_RUN_MODE, true);
-  configuration->deleteLater ();
+  auto runControl = new ProjectExplorer::RunControl (
+    configuration, ProjectExplorer::Constants::NORMAL_RUN_MODE);
+
+  auto producer = RunControl::producer (
+    configuration, ProjectExplorer::Constants::NORMAL_RUN_MODE);
+  QTC_ASSERT (producer, return );
+
+  if (!runControl) {
+    qDebug () << "failed to create run control";
+    return;
+  }
+  emit runControlAboutToStart (runControl);
+  (void) producer (runControl);
+
+  plugin->startRunControl (runControl);
 }
 
 void TestProject::checkChanged () {
@@ -103,7 +116,7 @@ void TestProject::checkCurrent () {
   runTestsForFiles (FileNameList () << file, configuration);
 }
 
-void TestProject::runTestsForFiles (const FileNameList &files, RunConfiguration *configuration) const {
+void TestProject::runTestsForFiles (const FileNameList &files, RunConfiguration *configuration) {
   Q_ASSERT (configuration != NULL);
   Q_ASSERT (!gtestIncludeFiles_.isEmpty ());
   QSet<FileName> testFiles = getDependentFiles (gtestIncludeFiles_).toSet ();

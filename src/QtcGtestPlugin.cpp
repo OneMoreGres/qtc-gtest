@@ -50,10 +50,8 @@ bool QtcGtestPlugin::initialize (const QStringList &arguments, QString *errorStr
 
   OutputPane *pane = new OutputPane;
   pane->setCheckActions (checkProjectAction, checkCurrentAction, checkChangedAction);
-  connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlStarted (ProjectExplorer::RunControl *)),
-           pane, SLOT (handleRunStart (ProjectExplorer::RunControl *)));
-  connect (ProjectExplorerPlugin::instance (), SIGNAL (runControlFinished (ProjectExplorer::RunControl *)),
-           pane, SLOT (handleRunFinish (ProjectExplorer::RunControl *)));
+  connect (testProject_,&TestProject::runControlAboutToStart,
+           pane, &OutputPane::handleRunStart);
   addAutoReleasedObject (pane);
 
 

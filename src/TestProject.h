@@ -10,6 +10,7 @@
 namespace ProjectExplorer {
   class Project;
   class RunConfiguration;
+  class RunControl;
 }
 
 namespace QtcGtest {
@@ -33,13 +34,16 @@ namespace QtcGtest {
                                     const QVector<int> &roles);
         void handleDocumentsClose (const QModelIndex &parent, int start, int end);
 
+      signals:
+        void runControlAboutToStart (ProjectExplorer::RunControl *control);
+
       private:
         Utils::FileNameList getChangedFiles (int beginRow, int endRow, bool modifiedFlag) const;
-        void runTestsForFiles (const Utils::FileNameList &files, RunConfiguration *configuration) const;
+        void runTestsForFiles (const Utils::FileNameList &files, RunConfiguration *configuration);
         RunConfiguration *parse (ProjectExplorer::Project *project);
         Utils::FileNameList gtestMainIncludes () const;
         void preprocessDependencyTable ();
-        void runTests (RunConfiguration *configuration) const;
+        void runTests (RunConfiguration *configuration);
         QStringList getTestCases (const QSet<Utils::FileName> &fileNames) const;
         Utils::FileNameList getDependentFiles (const Utils::FileNameList &files) const;
 

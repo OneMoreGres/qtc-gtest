@@ -1,7 +1,7 @@
 #ifndef PARSESTATE_H
 #define PARSESTATE_H
 
-#include <QStringList>
+#include <utils/fileutils.h>
 
 namespace QtcGtest {
   namespace Internal {
@@ -12,7 +12,7 @@ namespace QtcGtest {
         void reset ();
 
         bool isGoogleTestRun;
-        QStringList projectFiles;
+        Utils::FileNameList projectFiles;
         QString currentCase;
         QString currentTest;
         int passedCount;

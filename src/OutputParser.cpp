@@ -129,7 +129,7 @@ void OutputParser::parseMessage (const QString &line, TestModel &model, ParseSta
       QString searchName = file.contains (dirUp) ? file.mid (file.lastIndexOf (dirUp) + 2) : file;
       for (const auto &projectFile: state.projectFiles) {
         if (projectFile.endsWith (searchName)) {
-          file = projectFile;
+          file = projectFile.toString ();
           break;
         }
       }

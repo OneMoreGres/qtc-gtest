@@ -108,8 +108,8 @@ void TestProject::checkCurrent () {
     return;
   }
   FileName file = document->filePath ();
-  QStringList files = project->files (Project::SourceFiles);
-  if (!files.contains (file.toString ())) {
+  Utils::FileNameList files = project->files (Project::SourceFiles);
+  if (!files.contains (file)) {
     return;
   }
 
